@@ -1,7 +1,54 @@
+import 'package:flutter/material.dart';
+import 'pages/home_page.dart';
+// import 'pages/detail_page.dart';
+// import 'pages/search_page.dart';
+
+void main() {
+  runApp(const CookMateApp());
+}
+
+class CookMateApp extends StatelessWidget {
+  const CookMateApp({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return MaterialApp(
+      //home: const HomePage(),
+      // home: const DetailPage(),
+      home: const HomePage(),
+      debugShowCheckedModeBanner: false,
+    );
+  }
+}
+
+// // import 'package:flutter/material.dart';
+// // import 'pages/ingredients/myingredients_page.dart';
+// // import 'pages/ingredients/categories_page.dart';
+
+// // void main() {
+// //   runApp(const MyApp());
+// // }
+
+// // class MyApp extends StatelessWidget {
+// //   const MyApp({super.key});
+
+// //   @override
+// //   Widget build(BuildContext context) {
+// //     return MaterialApp(
+// //       debugShowCheckedModeBanner: false,
+// //       initialRoute: '/my-ingredients', // ✅ เริ่มต้นที่หน้า MyIngredientsPage
+// //       routes: {
+// //         '/my-ingredients': (context) => MyIngredientsPage(),
+// //         '/categories': (context) => CategoriesPage(),
+// //       },
+// //     );
+// //   }
+// // }
 
 // import 'package:flutter/material.dart';
 // import 'pages/ingredients/myingredients_page.dart';
 // import 'pages/ingredients/categories_page.dart';
+// import 'pages/fav_page.dart'; // นำเข้า FavPage
 
 // void main() {
 //   runApp(const MyApp());
@@ -18,36 +65,12 @@
 //       routes: {
 //         '/my-ingredients': (context) => MyIngredientsPage(),
 //         '/categories': (context) => CategoriesPage(),
+//         '/favorites': (context) => FavPage(), // ลงทะเบียน FavPage ใน routes
 //       },
 //     );
 //   }
 // }
 
-import 'package:flutter/material.dart';
-import 'pages/ingredients/myingredients_page.dart';
-import 'pages/ingredients/categories_page.dart';
-import 'pages/fav_page.dart'; // นำเข้า FavPage
-
-void main() {
-  runApp(const MyApp());
-}
-
-class MyApp extends StatelessWidget {
-  const MyApp({super.key});
-
-  @override
-  Widget build(BuildContext context) {
-    return MaterialApp(
-      debugShowCheckedModeBanner: false,
-      initialRoute: '/my-ingredients', // ✅ เริ่มต้นที่หน้า MyIngredientsPage
-      routes: {
-        '/my-ingredients': (context) => MyIngredientsPage(),
-        '/categories': (context) => CategoriesPage(),
-        '/favorites': (context) => FavPage(), // ลงทะเบียน FavPage ใน routes
-      },
-    );
-  }
-}
 
 
 // import 'package:flutter/material.dart';
