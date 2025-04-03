@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'pages/home_page.dart';
-// import 'pages/detail_page.dart';
-// import 'pages/search_page.dart';
+import 'pages/detail_page.dart';
+import 'pages/search_page.dart';
 
 void main() {
   runApp(const CookMateApp());

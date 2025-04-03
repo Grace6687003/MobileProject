@@ -4,6 +4,8 @@ import '../models/ingredient_model.dart';
 import '../widgets/menu_card.dart';
 import '../widgets/ingredient_card.dart';
 import '../widgets/menu_item_card.dart';
+import '../pages/detail_page.dart'; // ✅ เพิ่ม import
+import '../widgets/bottom_navbar.dart'; // ✅ เพิ่ม import
 
 class HomePage extends StatelessWidget {
   const HomePage({super.key});
@@ -36,7 +38,6 @@ class HomePage extends StatelessWidget {
       ),
     ];
 
-    // ปุ่ม GO สไตล์กลม
     Widget goCard(VoidCallback onTap) {
       return GestureDetector(
         onTap: onTap,
@@ -45,7 +46,7 @@ class HomePage extends StatelessWidget {
           height: 64,
           margin: const EdgeInsets.only(right: 16),
           decoration: BoxDecoration(
-            color: const Color(0xFFF9F9F9), // ให้กลืนกับ background
+            color: const Color(0xFFF9F9F9),
             shape: BoxShape.circle,
           ),
           child: Center(
@@ -62,6 +63,7 @@ class HomePage extends StatelessWidget {
     return Scaffold(
       backgroundColor: const Color(0xFFF9F9F9),
       appBar: AppBar(title: const Text('COOKMATE')),
+      bottomNavigationBar: BottomNavBar(), // ✅ เพิ่ม BottomNavBar
       body: SingleChildScrollView(
         padding: const EdgeInsets.only(top: 38),
         child: Column(
@@ -89,7 +91,17 @@ class HomePage extends StatelessWidget {
                 separatorBuilder: (_, __) => const SizedBox(width: 12),
                 itemBuilder: (context, index) {
                   if (index < menus.length) {
-                    return MenuCard(menu: menus[index]);
+                    return MenuCard(
+                      menu: menus[index],
+                      onTap: () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => const DetailPage(),
+                          ),
+                        );
+                      },
+                    );
                   } else {
                     return goCard(() {
                       // ไปยังหน้าเมนูทั้งหมด
@@ -168,7 +180,12 @@ class HomePage extends StatelessWidget {
                       imagePath: menu.imagePath,
                       name: menu.name,
                       onTap: () {
-                        // การกระทำเมื่อคลิกเมนูโปรด
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => const DetailPage(),
+                          ),
+                        );
                       },
                     );
                   } else {
@@ -212,12 +229,17 @@ class HomePage extends StatelessWidget {
                       imagePath: menu.imagePath,
                       name: menu.name,
                       onTap: () {
-                        // การกระทำเมื่อคลิกเมนูโปรด
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => const DetailPage(),
+                          ),
+                        );
                       },
                     );
                   } else {
                     return goCard(() {
-                      // ไปยังหน้ารายการเมนูโปรดทั้งหมด
+                      // ไปยังหน้ารายการเมนูแนะนำทั้งหมด
                     });
                   }
                 },
