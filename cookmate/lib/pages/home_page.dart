@@ -6,6 +6,7 @@ import '../widgets/ingredient_card.dart';
 import '../widgets/menu_item_card.dart';
 import '../pages/detail_page.dart'; // ✅ เพิ่ม import
 import '../widgets/bottom_navbar.dart'; // ✅ เพิ่ม import
+import '../widgets/home_appbar.dart';
 
 class HomePage extends StatelessWidget {
   const HomePage({super.key});
@@ -62,7 +63,7 @@ class HomePage extends StatelessWidget {
 
     return Scaffold(
       backgroundColor: const Color(0xFFF9F9F9),
-      appBar: AppBar(title: const Text('COOKMATE')),
+      appBar: HomeAppBar(title: 'COOKMATE'),
       bottomNavigationBar: BottomNavBar(), // ✅ เพิ่ม BottomNavBar
       body: SingleChildScrollView(
         padding: const EdgeInsets.only(top: 38),

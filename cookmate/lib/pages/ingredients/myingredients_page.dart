@@ -62,7 +62,7 @@
 
 // //   Widget _buildAlertItem(String imagePath) {
 // //     return Padding(
-// //       padding: const EdgeInsets.only(left: 16.0, bottom: 30), 
+// //       padding: const EdgeInsets.only(left: 16.0, bottom: 30),
 // //       child: Container(
 // //         width: 56,
 // //         height: 56,
@@ -71,7 +71,7 @@
 // //           color: Colors.white, // ✅ พื้นหลังสีขาว
 // //           border: Border.all(color: Color(0xFFFFE2D7), width: 2),
 // //           boxShadow: [
-// //             BoxShadow(  
+// //             BoxShadow(
 // //               color: Colors.black12,
 // //               blurRadius: 4,
 // //               offset: Offset(0, 2),
@@ -87,7 +87,7 @@
 
 // //   Widget _buildMyIngredientsSection(BuildContext context) {
 // //     return Container(
-// //       padding: const EdgeInsets.only(left: 16.0, bottom: 200), 
+// //       padding: const EdgeInsets.only(left: 16.0, bottom: 200),
 // //       decoration: BoxDecoration(
 // //         color: Color(0xFFE8F1F8), // สีฟ้าอ่อน
 // //         borderRadius: BorderRadius.circular(20),
@@ -145,7 +145,6 @@
 // //     );
 // //   }
 // // }
-
 
 // import 'package:flutter/material.dart';
 // import '/widgets/ingredient_appbar.dart';
@@ -305,6 +304,7 @@
 import 'package:flutter/material.dart';
 import '/widgets/ingredient_appbar.dart';
 import '/widgets/bottom_navbar.dart';
+import '/pages/ingredients/categories_page.dart';
 
 class MyIngredientsPage extends StatelessWidget {
   @override
@@ -312,9 +312,7 @@ class MyIngredientsPage extends StatelessWidget {
     return Scaffold(
       appBar: CustomAppBar(title: 'Ingredients'),
       bottomNavigationBar: Theme(
-        data: Theme.of(context).copyWith(
-          canvasColor: Color(0xFF2A2C41),
-        ),
+        data: Theme.of(context).copyWith(canvasColor: Color(0xFF2A2C41)),
         child: BottomNavBar(),
       ),
       body: SingleChildScrollView(
@@ -422,7 +420,12 @@ class MyIngredientsPage extends StatelessWidget {
               IconButton(
                 icon: Icon(Icons.add_circle_outline, size: 28),
                 onPressed: () {
-                  Navigator.pushNamed(context, '/categories');
+                  Navigator.pushReplacement(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) =>  CategoriesPage(),
+                    ),
+                  );
                 },
               ),
             ],
@@ -431,7 +434,8 @@ class MyIngredientsPage extends StatelessWidget {
           Wrap(
             spacing: 12,
             runSpacing: 12,
-            children: myIngredients.map((img) => _buildIngredientItem(img)).toList(),
+            children:
+                myIngredients.map((img) => _buildIngredientItem(img)).toList(),
           ),
         ],
       ),

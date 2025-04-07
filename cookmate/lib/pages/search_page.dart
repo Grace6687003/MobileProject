@@ -53,13 +53,13 @@ class _SearchPageState extends State<SearchPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: const Text('ค้นหาเมนู'),
-      ),
+      // appBar: AppBar(
+      //   title: const Text('ค้นหาเมนู'),
+      // ),
       backgroundColor: const Color(0xFFF9F9F9),
       bottomNavigationBar: BottomNavBar(), // ✅ เพิ่มตรงนี้
       body: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 50),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [

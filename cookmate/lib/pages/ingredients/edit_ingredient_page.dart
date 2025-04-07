@@ -1,7 +1,5 @@
-
-
 import 'package:flutter/material.dart';
-import '/widgets/bottom_navbar.dart'; // อย่าลืมเพิ่มการ import สำหรับ BottomNavBar
+import '/widgets/bottom_navbar.dart'; 
 
 class AddIngredientPage extends StatefulWidget {
   final String ingredientName;
@@ -78,7 +76,7 @@ class _AddIngredientPageState extends State<AddIngredientPage> {
           onPressed: () => Navigator.pop(context),
         ),
         title: Text(
-          'Add Ingredient',
+          'แก้ไขวัตถุดิบ',
           style: TextStyle(
             fontWeight: FontWeight.bold,
             color: Colors.black,
@@ -225,14 +223,16 @@ class _AddIngredientPageState extends State<AddIngredientPage> {
               ),
               SizedBox(height: 24),
 
-              // ปุ่ม
+              // ปุ่มแก้ไขและลบ
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                 children: [
                   ElevatedButton(
-                    onPressed: () => Navigator.pop(context),
+                    onPressed: () {
+                      // TODO: Add delete action
+                    },
                     style: ElevatedButton.styleFrom(
-                      backgroundColor: Color(0xFFFEA9A4),
+                      backgroundColor: Color(0xFFFFA4A4),
                       shape: RoundedRectangleBorder(
                         side: BorderSide(color: Colors.black),
                         borderRadius: BorderRadius.circular(20),
@@ -243,7 +243,7 @@ class _AddIngredientPageState extends State<AddIngredientPage> {
                       ),
                     ),
                     child: Text(
-                      'ยกเลิก',
+                      'ลบ',
                       style: TextStyle(
                         fontWeight: FontWeight.bold,
                         color: Colors.black,
@@ -252,10 +252,10 @@ class _AddIngredientPageState extends State<AddIngredientPage> {
                   ),
                   ElevatedButton(
                     onPressed: () {
-                      // TODO: Save to DB
+                      // TODO: Add update action
                     },
                     style: ElevatedButton.styleFrom(
-                      backgroundColor: Color(0xFFC3E090),
+                      backgroundColor: Color(0xFFFEDB71),
                       shape: RoundedRectangleBorder(
                         side: BorderSide(color: Colors.black),
                         borderRadius: BorderRadius.circular(20),
@@ -266,7 +266,7 @@ class _AddIngredientPageState extends State<AddIngredientPage> {
                       ),
                     ),
                     child: Text(
-                      'บันทึก',
+                      'แก้ไข',
                       style: TextStyle(
                         fontWeight: FontWeight.bold,
                         color: Colors.black,
