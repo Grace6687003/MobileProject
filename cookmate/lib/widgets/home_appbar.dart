@@ -6,7 +6,7 @@ class HomeAppBar extends StatelessWidget implements PreferredSizeWidget {
   HomeAppBar({required this.title});
 
   @override
-  Size get preferredSize => Size.fromHeight(64); // ความสูงของ AppBar
+  Size get preferredSize => Size.fromHeight(100); // เพิ่มความสูงของ AppBar
 
   @override
   Widget build(BuildContext context) {
@@ -16,14 +16,15 @@ class HomeAppBar extends StatelessWidget implements PreferredSizeWidget {
       automaticallyImplyLeading: false, // ไม่ใช้ปุ่ม back อัตโนมัติ
       flexibleSpace: SafeArea(
         child: Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 120.0, vertical: 12.0),
+          padding: const EdgeInsets.symmetric(horizontal: 20.0, vertical: 24.0), // เพิ่ม padding ด้านซ้าย
           child: Row(
-            mainAxisAlignment: MainAxisAlignment.start, // จัดตำแหน่งให้ซ้าย
+            mainAxisAlignment: MainAxisAlignment.start, // จัดตำแหน่งให้ข้อความไปทางซ้าย
+            crossAxisAlignment: CrossAxisAlignment.center, // ขยับข้อความลงเล็กน้อย
             children: [
               Text(
                 title,
                 style: TextStyle(
-                  fontSize: 24,
+                  fontSize: 32,
                   fontWeight: FontWeight.bold,
                   color: Colors.black, // ตัวอักษรเป็นสีดำ
                 ),
@@ -34,8 +35,8 @@ class HomeAppBar extends StatelessWidget implements PreferredSizeWidget {
       ),
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.only(
-          bottomLeft: Radius.circular(30), // มุมโค้งที่ด้านล่าง
-          bottomRight: Radius.circular(30),
+          bottomLeft: Radius.circular(40), // มุมโค้งที่ด้านล่าง
+          bottomRight: Radius.circular(40),
         ),
       ),
     );

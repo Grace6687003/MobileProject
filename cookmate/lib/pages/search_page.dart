@@ -53,18 +53,16 @@ class _SearchPageState extends State<SearchPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      // appBar: AppBar(
-      //   title: const Text('ค้นหาเมนู'),
-      // ),
       backgroundColor: const Color(0xFFF9F9F9),
       bottomNavigationBar: BottomNavBar(), // ✅ เพิ่มตรงนี้
       body: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 50),
+        padding: const EdgeInsets.symmetric(horizontal: 16.0), // ปรับ padding
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             // 🔍 ช่องค้นหาพร้อมเงา
             Container(
+              margin: const EdgeInsets.only(top: 40.0), // ปรับระยะห่างจากขอบบนให้เหมาะสม
               decoration: BoxDecoration(
                 color: const Color(0xfff7b03a),
                 borderRadius: BorderRadius.circular(25),
@@ -102,7 +100,7 @@ class _SearchPageState extends State<SearchPage> {
               ),
             ),
 
-            const SizedBox(height: 22),
+            const SizedBox(height: 20), 
 
             // 🔘 ปุ่มกรอง
             Row(
@@ -161,7 +159,7 @@ class _SearchPageState extends State<SearchPage> {
               ],
             ),
 
-            const SizedBox(height: 16),
+            const SizedBox(height: 4), 
 
             // 📋 รายการเมนู
             Expanded(

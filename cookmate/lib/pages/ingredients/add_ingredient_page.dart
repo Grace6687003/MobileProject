@@ -1,7 +1,5 @@
-
-
 import 'package:flutter/material.dart';
-import '/widgets/bottom_navbar.dart'; // อย่าลืมเพิ่มการ import สำหรับ BottomNavBar
+import '/widgets/bottom_navbar.dart';
 
 class AddIngredientPage extends StatefulWidget {
   final String ingredientName;
@@ -19,10 +17,10 @@ class AddIngredientPage extends StatefulWidget {
 
 class _AddIngredientPageState extends State<AddIngredientPage> {
   TextEditingController _dateController = TextEditingController();
-  DateTime currentDate = DateTime.now(); // วันที่ปัจจุบัน
+  DateTime currentDate = DateTime.now(); 
   String? selectedDate;
-  String? selectedIngredient; // สำหรับเก็บชื่อวัตถุดิบที่เลือก
-  FocusNode _focusNode = FocusNode(); // เพิ่ม FocusNode เพื่อให้สามารถคลิกที่ TextField ได้
+  String? selectedIngredient; 
+  FocusNode _focusNode = FocusNode(); 
 
   final List<String> ingredientList = [
     'เนื้อสัตว์',
@@ -35,33 +33,31 @@ class _AddIngredientPageState extends State<AddIngredientPage> {
   @override
   void dispose() {
     _dateController.dispose();
-    _focusNode.dispose(); // อย่าลืม dispose FocusNode
+    _focusNode.dispose(); 
     super.dispose();
   }
 
-  // ฟังก์ชันสำหรับคำนวณวันหมดอายุ
   void _calculateDate(int daysToAdd) {
     setState(() {
       DateTime newDate = currentDate.add(Duration(days: daysToAdd));
-      selectedDate = "${newDate.toLocal()}".split(' ')[0]; // แสดงวันที่ใหม่
+      selectedDate = "${newDate.toLocal()}".split(' ')[0]; 
       _dateController.text = selectedDate ?? '';
     });
   }
 
-  // ฟังก์ชันแสดงปฏิทินสำหรับเลือกวัน
   Future<void> _selectDate(BuildContext context) async {
     final DateTime? picked = await showDatePicker(
       context: context,
-      initialDate: DateTime.now(), // วันที่เริ่มต้นเป็นวันที่ปัจจุบัน
-      firstDate: DateTime(2000), // วันที่เริ่มต้นของปฏิทิน
-      lastDate: DateTime(2101), // วันที่สิ้นสุดของปฏิทิน
+      initialDate: DateTime.now(), 
+      firstDate: DateTime(2000), 
+      lastDate: DateTime(2101), 
     );
 
     if (picked != null) {
       setState(() {
         selectedDate =
-            "${picked.toLocal()}".split(' ')[0]; // แสดงวันที่ที่เลือก
-        _dateController.text = selectedDate ?? ''; // อัพเดทใน TextField
+            "${picked.toLocal()}".split(' ')[0]; 
+        _dateController.text = selectedDate ?? ''; 
       });
     }
   }
@@ -96,25 +92,22 @@ class _AddIngredientPageState extends State<AddIngredientPage> {
         child: SingleChildScrollView(
           child: Column(
             children: [
-              // รูปวัตถุดิบ
               Container(
-                padding: EdgeInsets.all(8), // เพิ่ม padding รอบๆ รูปภาพ
+                padding: EdgeInsets.all(8), 
                 decoration: BoxDecoration(
                   shape: BoxShape.circle,
                   border: Border.all(
-                    color: Colors.black, // สีขอบ
-                    width: 1, // ความหนาของขอบ
+                    color: Colors.black, 
+                    width: 1, 
                   ),
                 ),
                 child: CircleAvatar(
                   radius: 60,
-                  backgroundColor: Colors.white, // สีพื้นหลัง
+                  backgroundColor: Colors.white, 
                   backgroundImage: AssetImage(widget.imagePath),
                 ),
               ),
               SizedBox(height: 24),
-
-              // ชื่อวัตถุดิบ (Dropdown)
               Align(
                 alignment: Alignment.centerLeft,
                 child: Text(
@@ -148,8 +141,6 @@ class _AddIngredientPageState extends State<AddIngredientPage> {
                 ),
               ),
               SizedBox(height: 20),
-
-              // รายละเอียด
               Align(
                 alignment: Alignment.centerLeft,
                 child: Text(
@@ -166,8 +157,6 @@ class _AddIngredientPageState extends State<AddIngredientPage> {
                 ),
               ),
               SizedBox(height: 20),
-
-              // วันหมดอายุ
               Align(
                 alignment: Alignment.centerLeft,
                 child: Text(
@@ -182,7 +171,7 @@ class _AddIngredientPageState extends State<AddIngredientPage> {
                 children: List.generate(7, (i) {
                   return GestureDetector(
                     onTap: () {
-                      _calculateDate(i + 1); // กดเลือก 1 วัน, 2 วัน, 3 วัน ฯลฯ
+                      _calculateDate(i + 1); 
                     },
                     child: Container(
                       decoration: BoxDecoration(
@@ -199,33 +188,29 @@ class _AddIngredientPageState extends State<AddIngredientPage> {
                 }),
               ),
               SizedBox(height: 16),
-
-              // ป้อนวันที่จาก DatePicker
               TextField(
                 controller: _dateController,
-                enabled: true, // ไม่ให้แก้ไข
-                focusNode: _focusNode, // กำหนด FocusNode
+                enabled: true, 
+                focusNode: _focusNode, 
                 decoration: InputDecoration(
                   labelText: 'เลือกวันที่',
                   hintText: 'กรุณาเลือกวันที่',
                   hintStyle: TextStyle(color: Colors.black),
-                  prefixIcon: Icon(Icons.calendar_month, color: Colors.red), // แสดงไอคอน
+                  prefixIcon: Icon(Icons.calendar_month, color: Colors.red), 
                   border: OutlineInputBorder(
-                    borderSide: BorderSide(color: Colors.black), // ขอบดำ
+                    borderSide: BorderSide(color: Colors.black), 
                     borderRadius: BorderRadius.circular(16),
                   ),
                   focusedBorder: OutlineInputBorder(
-                    borderSide: BorderSide(color: Colors.blue), // ขอบเมื่อเลือก
+                    borderSide: BorderSide(color: Colors.blue), 
                     borderRadius: BorderRadius.circular(16),
                   ),
                 ),
                 onTap: () {
-                  _selectDate(context); // กดเลือกวันที่จาก DatePicker
+                  _selectDate(context); 
                 },
               ),
               SizedBox(height: 24),
-
-              // ปุ่ม
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                 children: [

@@ -332,8 +332,8 @@ class MyIngredientsPage extends StatelessWidget {
   Widget _buildExpiringSection() {
     final List<String> expiringItems = [
       'assets/images/categories/egg.png',
-      'assets/images/categories/cut_of_meat.png',
-      'assets/images/categories/green_salad.png',
+      'assets/images/categories/meat.png',
+      'assets/images/categories/vegetable.png',
     ];
 
     return Container(
@@ -396,9 +396,9 @@ class MyIngredientsPage extends StatelessWidget {
 
   Widget _buildMyIngredientsSection(BuildContext context) {
     final List<String> myIngredients = [
-      'assets/images/categories/green_salad.png',
-      'assets/images/categories/green_salad.png',
-      'assets/images/categories/cut_of_meat.png',
+      'assets/images/categories/vegetable.png',
+      'assets/images/categories/vegetable.png',
+      'assets/images/categories/meat.png',
     ];
 
     return Container(

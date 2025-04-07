@@ -4,8 +4,8 @@ import '../models/ingredient_model.dart';
 import '../widgets/menu_card.dart';
 import '../widgets/ingredient_card.dart';
 import '../widgets/menu_item_card.dart';
-import '../pages/detail_page.dart'; // ✅ เพิ่ม import
-import '../widgets/bottom_navbar.dart'; // ✅ เพิ่ม import
+import '../pages/detail_page.dart';
+import '../widgets/bottom_navbar.dart';
 import '../widgets/home_appbar.dart';
 
 class HomePage extends StatelessWidget {
@@ -27,14 +27,14 @@ class HomePage extends StatelessWidget {
         id: 2,
         ingredientId: 3,
         name: 'หมู',
-        imagePath: 'assets/images/categories/cut_of_meat.png',
+        imagePath: 'assets/images/categories/meat.png',
         expDate: DateTime(2025, 4, 5),
       ),
       IngredientModel(
         id: 3,
         ingredientId: 4,
         name: 'ผักกาด',
-        imagePath: 'assets/images/categories/green_salad.png',
+        imagePath: 'assets/images/categories/vegetable.png',
         expDate: DateTime(2025, 3, 25),
       ),
     ];
@@ -64,9 +64,9 @@ class HomePage extends StatelessWidget {
     return Scaffold(
       backgroundColor: const Color(0xFFF9F9F9),
       appBar: HomeAppBar(title: 'COOKMATE'),
-      bottomNavigationBar: BottomNavBar(), // ✅ เพิ่ม BottomNavBar
+      bottomNavigationBar: BottomNavBar(), 
       body: SingleChildScrollView(
-        padding: const EdgeInsets.only(top: 38),
+        padding: const EdgeInsets.only(top: 30),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [

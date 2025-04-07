@@ -62,7 +62,7 @@ class _BottomNavBarState extends State<BottomNavBar> {
             icon: SizedBox(
               height: 24,
               child: Image(
-                image: AssetImage('assets/images/ui/home.png'),
+                image: AssetImage('assets/images/icon/home.png'),
               ),
             ),
             label: '',
@@ -71,7 +71,7 @@ class _BottomNavBarState extends State<BottomNavBar> {
             icon: SizedBox(
               height: 24,
               child: Image(
-                image: AssetImage('assets/images/ui/search.png'),
+                image: AssetImage('assets/images/icon/search.png'),
               ),
             ),
             label: '',
@@ -80,7 +80,7 @@ class _BottomNavBarState extends State<BottomNavBar> {
             icon: SizedBox(
               height: 24,
               child: Image(
-                image: AssetImage('assets/images/ui/task.png'),
+                image: AssetImage('assets/images/icon/my_ingredient.png'),
               ),
             ),
             label: '',
@@ -89,7 +89,7 @@ class _BottomNavBarState extends State<BottomNavBar> {
             icon: SizedBox(
               height: 24,
               child: Image(
-                image: AssetImage('assets/images/ui/fav.png'),
+                image: AssetImage('assets/images/icon/favorite.png'),
               ),
             ),
             label: '',
