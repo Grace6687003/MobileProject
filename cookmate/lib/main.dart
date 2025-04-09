@@ -1,7 +1,12 @@
 import 'package:flutter/material.dart';
 import 'pages/home_page.dart';
-
+import 'DatabaseHelper.dart';
+import 'DatabaseHelperTest.dart';
+import '../models/menu_from_ingredients_model.dart';
 void main() {
+  // ทดสอบการเชื่อมต่อฐานข้อมูล
+  DatabaseHelperTest.testConnection();
+
   runApp(const CookMateApp());
 }
 
@@ -17,7 +22,7 @@ class CookMateApp extends StatelessWidget {
           // ไม่จำเป็นต้องกำหนดฟอนต์ในแต่ละตัว เช่น bodyText1, bodyText2, headline1, ...
         ),
       ),
-      home: const HomePage(),
+      home:  HomePage(),
       debugShowCheckedModeBanner: false,
     );
   }
