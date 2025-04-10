@@ -26,7 +26,7 @@ class _AddIngredientPageState extends State<AddIngredientPage> {
     'เนื้อสัตว์',
     'ผลิตภัณฑ์นม',
     'ไข่',
-    'ขนมปัง',
+    'แป้ง',
     'ผัก',
   ];
 

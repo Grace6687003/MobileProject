@@ -141,6 +141,10 @@ import '/widgets/bottom_navbar.dart';
 import 'add_ingredient_page.dart'; 
 
 class CategoriesPage extends StatelessWidget {
+  final String ingredientName;
+  final String imagePath;
+
+  CategoriesPage({required this.ingredientName, required this.imagePath});
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -176,7 +180,7 @@ class CategoriesPage extends StatelessWidget {
                   _buildCategoryItem('เนื้อสัตว์', 'assets/images/categories/meat.png', 56, 56, context),
                   _buildCategoryItem('ผลิตภัณฑ์นม', 'assets/images/categories/milk.png', 56, 56, context),
                   _buildCategoryItem('ไข่', 'assets/images/categories/egg.png', 56, 56, context),
-                  _buildCategoryItem('ขนมปัง', 'assets/images/categories/bread.png', 56, 56, context),
+                  _buildCategoryItem('แป้ง', 'assets/images/categories/bread.png', 56, 56, context),
                   _buildCategoryItem('ผัก', 'assets/images/categories/vegetable.png', 56, 56, context),
                 ],
               ),

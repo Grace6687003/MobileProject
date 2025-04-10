@@ -532,94 +532,6 @@ class HomePage extends StatelessWidget {
             ),
             const SizedBox(height: 17),
 
-            // ใช้ FutureBuilder เพื่อดึงข้อมูลเมนู
-            // FutureBuilder<List<MenuFromIngredientsModel>>(
-            //   future: MenuFromIngredientsModel.getMenus(), // ดึงข้อมูลเมนูจากฐานข้อมูล
-            //   builder: (context, snapshot) {
-            //     if (snapshot.connectionState == ConnectionState.waiting) {
-            //       return Center(child: CircularProgressIndicator());
-            //     } else if (snapshot.hasError) {
-            //       return Center(child: Text('Error: ${snapshot.error}'));
-            //     } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
-            //       return Center(child: Text('No menus found'));
-            //     } else {
-            //       final menuData = snapshot.data!;
-            //       return SizedBox(
-            //         height: 257.7,
-            //         child: ListView.separated(
-            //           scrollDirection: Axis.horizontal,
-            //           padding: const EdgeInsets.symmetric(horizontal: 16),
-            //           itemCount: menuData.length + 1,
-            //           separatorBuilder: (_, __) => const SizedBox(width: 12),
-            //           itemBuilder: (context, index) {
-            //             if (index < menuData.length) {
-            //               return MenuCard(
-            //                 menu: menuData[index],
-            //                 onTap: () {
-            //                   Navigator.push(
-            //                     context,
-            //                     MaterialPageRoute(
-            //                       builder: (context) => const DetailPage(),
-            //                     ),
-            //                   );
-            //                 },
-            //               );
-            //             } else {
-            //               return goCard(() {
-            //                 // ไปยังหน้าเมนูทั้งหมด
-            //               });
-            //             }
-            //           },
-            //         ),
-            //       );
-            //     }
-            //   },
-            // )
-            // FutureBuilder<List<Map<String, String>>>(
-            //   future:
-            //       DatabaseHelperTest.fetchUsers(), // เรียกใช้ฟังก์ชัน fetchUsers() ที่ import มา
-            //   builder: (context, snapshot) {
-            //     // เช็คสถานะการโหลดข้อมูล
-            //     if (snapshot.connectionState == ConnectionState.waiting) {
-            //       return Center(child: CircularProgressIndicator());
-            //     }
-
-            //     // ถ้ามีข้อผิดพลาดในการดึงข้อมูล
-            //     if (snapshot.hasError) {
-            //       return Center(child: Text('Error: ${snapshot.error}'));
-            //     }
-
-            //     // ถ้าข้อมูลสำเร็จ
-            //     if (!snapshot.hasData || snapshot.data!.isEmpty) {
-            //       return Center(child: Text('No Recipes found'));
-            //     }
-
-            //     // แสดงข้อมูล Recipes ใน ListView
-            //     var recipes = snapshot.data!;
-            //     return ListView.builder(
-            //       itemCount: recipes.length,
-            //       itemBuilder: (context, index) {
-            //         var recipe = recipes[index];
-
-            //         return MenuCard(
-            //           name: recipe['recipe_name'] ?? 'No name',
-            //           imagePath:
-            //               recipe['recipe_image'] ?? 'assets/images/default.png',
-            //           onTap: () {
-            //             Navigator.push(
-            //               context,
-            //               MaterialPageRoute(
-            //                 builder:
-            //                     (_) =>
-            //                         DetailPage(), // ส่งข้อมูลไปด้วยถ้าต้องการ
-            //               ),
-            //             );
-            //           },
-            //         );
-            //       },
-            //     );
-            //   },
-            // ),
             FutureBuilder<List<Map<String, String>>>(
               future: DatabaseHelperTest.fetchRecipes(),
               builder: (context, snapshot) {
@@ -644,9 +556,9 @@ class HomePage extends StatelessWidget {
                     scrollDirection:
                         Axis.horizontal, // ✅ เพิ่มแนวนอนให้เหมือนของเดิม
                     padding: const EdgeInsets.symmetric(horizontal: 16),
-                    itemCount: recipes.length + 1,
+                    itemCount: 5,
                     itemBuilder: (context, index) {
-                      if (index < recipes.length) {
+                      if (index < 4) {
                         var recipe = recipes[index];
                         return MenuCard(
                           name: recipe['recipe_name'] ?? 'No name',
