@@ -3,6 +3,7 @@ import 'pages/home_page.dart';
 import 'DatabaseHelper.dart';
 import 'DatabaseHelperTest.dart';
 import '../models/menu_from_ingredients_model.dart';
+
 void main() {
   // ทดสอบการเชื่อมต่อฐานข้อมูล
   DatabaseHelperTest.testConnection();
@@ -17,12 +18,12 @@ class CookMateApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       theme: ThemeData(
-        fontFamily: 'NotoSansThai', // กำหนดฟอนต์หลัก
-        textTheme: TextTheme(
-          // ไม่จำเป็นต้องกำหนดฟอนต์ในแต่ละตัว เช่น bodyText1, bodyText2, headline1, ...
-        ),
+        fontFamily: 'NotoSansThai',
       ),
-      home:  HomePage(),
+      initialRoute: '/home', // ระบุให้เริ่มต้นที่ /home
+      routes: {
+        '/home': (context) => HomePage(), // ✅ เพิ่ม route นี้
+      },
       debugShowCheckedModeBanner: false,
     );
   }

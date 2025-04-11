@@ -24,7 +24,10 @@ class CustomfavAppBar extends StatelessWidget implements PreferredSizeWidget {
             ),
             // 🔼 Row ด้านบน ← Categories 🔔
             Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 12.0),
+              padding: const EdgeInsets.symmetric(
+                horizontal: 16.0,
+                vertical: 12.0,
+              ),
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
@@ -46,13 +49,6 @@ class CustomfavAppBar extends StatelessWidget implements PreferredSizeWidget {
                         ),
                       ),
                     ],
-                  ),
-                  // 🔔
-                  IconButton(
-                    icon: Icon(Icons.notifications),
-                    onPressed: () {
-                      // การกระทำเมื่อกด Bell
-                    },
                   ),
                 ],
               ),

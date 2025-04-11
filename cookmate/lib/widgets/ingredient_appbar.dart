@@ -1,42 +1,58 @@
+
 import 'package:flutter/material.dart';
 
 class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
   final String title;
+  final bool showBackButton;
+  final bool goHomeInsteadOfPop; // <== เพิ่มตรงนี้
 
-  CustomAppBar({required this.title});
+  CustomAppBar({
+    required this.title,
+    this.showBackButton = true,
+    this.goHomeInsteadOfPop = false, // <== เพิ่ม default
+  });
 
   @override
-  Size get preferredSize => Size.fromHeight(150); // ความสูงของ AppBar
+  Size get preferredSize => Size.fromHeight(150);
 
   @override
   Widget build(BuildContext context) {
     return AppBar(
-      backgroundColor: Color(0XFFFEDB71), // สีพื้นหลัง
+      backgroundColor: Color(0XFFFEDB71),
       elevation: 0,
-      automaticallyImplyLeading: false, // ไม่ใช้ปุ่ม back อัตโนมัติ
+      automaticallyImplyLeading: false,
       flexibleSpace: SafeArea(
         child: Stack(
           children: [
-            //  รูปถุงกระดาษด้านล่าง
             Align(
               alignment: Alignment.bottomCenter,
               child: _buildPaperBagImage(),
             ),
-            //  Row ด้านบน ← Categories 
             Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 12.0),
+              padding: const EdgeInsets.symmetric(
+                horizontal: 16.0,
+                vertical: 12.0,
+              ),
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  //  Categories
                   Row(
                     children: [
-                      IconButton(
-                        icon: Icon(Icons.arrow_back),
-                        onPressed: () {
-                          Navigator.pop(context);
-                        },
-                      ),
+                      if (showBackButton)
+                        IconButton(
+                          icon: Icon(Icons.arrow_back),
+                          onPressed: () {
+                            if (goHomeInsteadOfPop) {
+                              Navigator.pushNamedAndRemoveUntil(
+                                context,
+                                '/home',
+                                (route) => false,
+                              );
+                            } else {
+                              Navigator.pop(context);
+                            }
+                          },
+                        ),
                       SizedBox(width: 8),
                       Text(
                         title,
@@ -46,13 +62,6 @@ class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
                         ),
                       ),
                     ],
-                  ),
-                  // 
-                  IconButton(
-                    icon: Icon(Icons.notifications),
-                    onPressed: () {
-                      // การกระทำเมื่อกด Bell
-                    },
                   ),
                 ],
               ),
@@ -69,7 +78,6 @@ class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
     );
   }
 
-  // ภาพถุงกระดาษ
   Widget _buildPaperBagImage() {
     return Padding(
       padding: const EdgeInsets.only(left: 150.0, bottom: 0.5555),
@@ -84,4 +92,3 @@ class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
     );
   }
 }
-

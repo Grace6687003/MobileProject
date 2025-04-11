@@ -1,67 +1,135 @@
 import 'package:flutter/material.dart';
-import '/widgets/bottom_navbar.dart'; 
+import '/widgets/bottom_navbar.dart';
+import 'package:cookmate/DatabaseHelperTest.dart';
 
-class AddIngredientPage extends StatefulWidget {
+class EditIngredientPage extends StatefulWidget {
   final String ingredientName;
   final String imagePath;
+  final String? description;
+  final String? expDate;
 
-  const AddIngredientPage({
-    super.key,
+  const EditIngredientPage({
+    Key? key,
     required this.ingredientName,
     required this.imagePath,
-  });
+    this.description,
+    this.expDate,
+  }) : super(key: key);
 
   @override
-  _AddIngredientPageState createState() => _AddIngredientPageState();
+  _EditIngredientPageState createState() => _EditIngredientPageState();
 }
 
-class _AddIngredientPageState extends State<AddIngredientPage> {
+class _EditIngredientPageState extends State<EditIngredientPage> {
   TextEditingController _dateController = TextEditingController();
-  DateTime currentDate = DateTime.now(); // วันที่ปัจจุบัน
-  String? selectedDate;
-  String? selectedIngredient; // สำหรับเก็บชื่อวัตถุดิบที่เลือก
-  FocusNode _focusNode = FocusNode(); // เพิ่ม FocusNode เพื่อให้สามารถคลิกที่ TextField ได้
+  TextEditingController _detailController = TextEditingController();
 
-  final List<String> ingredientList = [
-    'เนื้อสัตว์',
-    'ผลิตภัณฑ์นม',
-    'ไข่',
-    'แป้ง',
-    'ผัก',
-  ];
+  DateTime currentDate = DateTime.now();
+  String? selectedDate;
+  String? selectedIngredient;
+  FocusNode _focusNode = FocusNode();
+  List<String> ingredientList = [];
+  bool isLoading = false;
 
   @override
   void dispose() {
     _dateController.dispose();
-    _focusNode.dispose(); // อย่าลืม dispose FocusNode
+    _detailController.dispose();
+    _focusNode.dispose();
     super.dispose();
   }
 
-  // ฟังก์ชันสำหรับคำนวณวันหมดอายุ
+  @override
+  void initState() {
+    super.initState();
+    // กำหนดค่าที่รับมาจากหน้าก่อนหน้า
+    _detailController.text = widget.description ?? '';
+    _dateController.text = widget.expDate ?? '';
+    selectedDate = widget.expDate;
+    loadIngredientByName(widget.ingredientName);
+  }
+
+  void loadIngredientByName(String name) async {
+    setState(() => isLoading = true);
+
+    final ingredients = await DatabaseHelperTest.fetchIngredientByName(name);
+
+    if (ingredients.isNotEmpty) {
+      final ingredient = ingredients[0];
+
+      setState(() {
+        ingredientList = [ingredient['ingredient_name'] ?? ''];
+        selectedIngredient = ingredient['ingredient_name'];
+
+        // ✅ เพิ่มการเซตค่าที่เหลือ
+        _detailController.text = ingredient['description'] ?? '';
+        _dateController.text = ingredient['exp_date'] ?? '';
+        selectedDate = ingredient['exp_date'];
+
+        isLoading = false;
+      });
+    } else {
+      setState(() => isLoading = false);
+    }
+  }
+
   void _calculateDate(int daysToAdd) {
     setState(() {
       DateTime newDate = currentDate.add(Duration(days: daysToAdd));
-      selectedDate = "${newDate.toLocal()}".split(' ')[0]; // แสดงวันที่ใหม่
+      selectedDate = "${newDate.toLocal()}".split(' ')[0];
       _dateController.text = selectedDate ?? '';
     });
   }
 
-  // ฟังก์ชันแสดงปฏิทินสำหรับเลือกวัน
   Future<void> _selectDate(BuildContext context) async {
     final DateTime? picked = await showDatePicker(
       context: context,
-      initialDate: DateTime.now(), // วันที่เริ่มต้นเป็นวันที่ปัจจุบัน
-      firstDate: DateTime(2000), // วันที่เริ่มต้นของปฏิทิน
-      lastDate: DateTime(2101), // วันที่สิ้นสุดของปฏิทิน
+      initialDate: DateTime.now(),
+      firstDate: DateTime(2000),
+      lastDate: DateTime(2101),
     );
 
     if (picked != null) {
       setState(() {
-        selectedDate =
-            "${picked.toLocal()}".split(' ')[0]; // แสดงวันที่ที่เลือก
-        _dateController.text = selectedDate ?? ''; // อัพเดทใน TextField
+        selectedDate = "${picked.toLocal()}".split(' ')[0];
+        _dateController.text = selectedDate ?? '';
       });
     }
+  }
+
+  void _showConfirmEditSnackBar() {
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: Text('คุณต้องการแก้ไขใช่มั้ย'),
+        action: SnackBarAction(
+          label: 'ยืนยัน',
+          textColor: Colors.green,
+          onPressed: () async {
+            if (selectedIngredient == null || selectedDate == null) {
+              ScaffoldMessenger.of(context).showSnackBar(
+                SnackBar(content: Text('กรุณากรอกข้อมูลให้ครบถ้วน')),
+              );
+              return;
+            }
+
+            await DatabaseHelperTest.updateIngredientDetail(
+              ingredientName: selectedIngredient!,
+              description:
+                  _detailController.text.trim().isEmpty
+                      ? null
+                      : _detailController.text,
+              expDate: selectedDate!,
+            );
+
+            ScaffoldMessenger.of(
+              context,
+            ).showSnackBar(SnackBar(content: Text('แก้ไขข้อมูลเรียบร้อย')));
+
+            Navigator.pop(context);
+          },
+        ),
+      ),
+    );
   }
 
   @override
@@ -76,7 +144,7 @@ class _AddIngredientPageState extends State<AddIngredientPage> {
           onPressed: () => Navigator.pop(context),
         ),
         title: Text(
-          'แก้ไขวัตถุดิบ',
+          'Edit Ingredient',
           style: TextStyle(
             fontWeight: FontWeight.bold,
             color: Colors.black,
@@ -94,25 +162,19 @@ class _AddIngredientPageState extends State<AddIngredientPage> {
         child: SingleChildScrollView(
           child: Column(
             children: [
-              // รูปวัตถุดิบ
               Container(
-                padding: EdgeInsets.all(8), // เพิ่ม padding รอบๆ รูปภาพ
+                padding: EdgeInsets.all(8),
                 decoration: BoxDecoration(
                   shape: BoxShape.circle,
-                  border: Border.all(
-                    color: Colors.black, // สีขอบ
-                    width: 1, // ความหนาของขอบ
-                  ),
+                  border: Border.all(color: Colors.black, width: 1),
                 ),
                 child: CircleAvatar(
                   radius: 60,
-                  backgroundColor: Colors.white, // สีพื้นหลัง
+                  backgroundColor: Colors.white,
                   backgroundImage: AssetImage(widget.imagePath),
                 ),
               ),
               SizedBox(height: 24),
-
-              // ชื่อวัตถุดิบ (Dropdown)
               Align(
                 alignment: Alignment.centerLeft,
                 child: Text(
@@ -121,33 +183,34 @@ class _AddIngredientPageState extends State<AddIngredientPage> {
                 ),
               ),
               SizedBox(height: 8),
-              Container(
-                height: 48,
-                padding: EdgeInsets.symmetric(horizontal: 12),
-                decoration: BoxDecoration(
-                  border: Border.all(color: Colors.black),
-                  borderRadius: BorderRadius.circular(16),
-                ),
-                child: DropdownButton<String>(
-                  value: selectedIngredient,
-                  hint: Text('เลือกวัตถุดิบ'),
-                  isExpanded: true,
-                  items: ingredientList.map((String value) {
-                    return DropdownMenuItem<String>(
-                      value: value,
-                      child: Text(value),
-                    );
-                  }).toList(),
-                  onChanged: (String? newValue) {
-                    setState(() {
-                      selectedIngredient = newValue;
-                    });
-                  },
-                ),
-              ),
+              isLoading
+                  ? CircularProgressIndicator()
+                  : Container(
+                    height: 48,
+                    padding: EdgeInsets.symmetric(horizontal: 12),
+                    decoration: BoxDecoration(
+                      border: Border.all(color: Colors.black),
+                      borderRadius: BorderRadius.circular(16),
+                    ),
+                    child: DropdownButton<String>(
+                      value: selectedIngredient,
+                      hint: Text('เลือกวัตถุดิบ'),
+                      isExpanded: true,
+                      items:
+                          ingredientList.map((String value) {
+                            return DropdownMenuItem<String>(
+                              value: value,
+                              child: Text(value),
+                            );
+                          }).toList(),
+                      onChanged: (String? newValue) {
+                        setState(() {
+                          selectedIngredient = newValue;
+                        });
+                      },
+                    ),
+                  ),
               SizedBox(height: 20),
-
-              // รายละเอียด
               Align(
                 alignment: Alignment.centerLeft,
                 child: Text(
@@ -157,6 +220,7 @@ class _AddIngredientPageState extends State<AddIngredientPage> {
               ),
               SizedBox(height: 8),
               TextField(
+                controller: _detailController,
                 maxLines: 2,
                 decoration: InputDecoration(
                   hintText: 'เช่น ปริมาณ 1 ถุง, ยี่ห้อ xxx',
@@ -164,8 +228,6 @@ class _AddIngredientPageState extends State<AddIngredientPage> {
                 ),
               ),
               SizedBox(height: 20),
-
-              // วันหมดอายุ
               Align(
                 alignment: Alignment.centerLeft,
                 child: Text(
@@ -179,9 +241,7 @@ class _AddIngredientPageState extends State<AddIngredientPage> {
                 runSpacing: 12,
                 children: List.generate(7, (i) {
                   return GestureDetector(
-                    onTap: () {
-                      _calculateDate(i + 1); // กดเลือก 1 วัน, 2 วัน, 3 วัน ฯลฯ
-                    },
+                    onTap: () => _calculateDate(i + 1),
                     child: Container(
                       decoration: BoxDecoration(
                         color: Color(0xFFFEDB71),
@@ -197,42 +257,34 @@ class _AddIngredientPageState extends State<AddIngredientPage> {
                 }),
               ),
               SizedBox(height: 16),
-
-              // ป้อนวันที่จาก DatePicker
               TextField(
                 controller: _dateController,
-                enabled: true, // ไม่ให้แก้ไข
-                focusNode: _focusNode, // กำหนด FocusNode
+                enabled: true,
+                focusNode: _focusNode,
                 decoration: InputDecoration(
                   labelText: 'เลือกวันที่',
                   hintText: 'กรุณาเลือกวันที่',
                   hintStyle: TextStyle(color: Colors.black),
-                  prefixIcon: Icon(Icons.calendar_month, color: Colors.red), // แสดงไอคอน
+                  prefixIcon: Icon(Icons.calendar_month, color: Colors.red),
                   border: OutlineInputBorder(
-                    borderSide: BorderSide(color: Colors.black), // ขอบดำ
+                    borderSide: BorderSide(color: Colors.black),
                     borderRadius: BorderRadius.circular(16),
                   ),
                   focusedBorder: OutlineInputBorder(
-                    borderSide: BorderSide(color: Colors.blue), // ขอบเมื่อเลือก
+                    borderSide: BorderSide(color: Colors.blue),
                     borderRadius: BorderRadius.circular(16),
                   ),
                 ),
-                onTap: () {
-                  _selectDate(context); // กดเลือกวันที่จาก DatePicker
-                },
+                onTap: () => _selectDate(context),
               ),
               SizedBox(height: 24),
-
-              // ปุ่มแก้ไขและลบ
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                 children: [
                   ElevatedButton(
-                    onPressed: () {
-                      // TODO: Add delete action
-                    },
+                    onPressed: () => Navigator.pop(context),
                     style: ElevatedButton.styleFrom(
-                      backgroundColor: Color(0xFFFFA4A4),
+                      backgroundColor: Color(0xFFFEA9A4),
                       shape: RoundedRectangleBorder(
                         side: BorderSide(color: Colors.black),
                         borderRadius: BorderRadius.circular(20),
@@ -243,7 +295,7 @@ class _AddIngredientPageState extends State<AddIngredientPage> {
                       ),
                     ),
                     child: Text(
-                      'ลบ',
+                      'ยกเลิก',
                       style: TextStyle(
                         fontWeight: FontWeight.bold,
                         color: Colors.black,
@@ -251,11 +303,9 @@ class _AddIngredientPageState extends State<AddIngredientPage> {
                     ),
                   ),
                   ElevatedButton(
-                    onPressed: () {
-                      // TODO: Add update action
-                    },
+                    onPressed: _showConfirmEditSnackBar,
                     style: ElevatedButton.styleFrom(
-                      backgroundColor: Color(0xFFFEDB71),
+                      backgroundColor: Color(0xFFC3E090),
                       shape: RoundedRectangleBorder(
                         side: BorderSide(color: Colors.black),
                         borderRadius: BorderRadius.circular(20),
@@ -266,7 +316,7 @@ class _AddIngredientPageState extends State<AddIngredientPage> {
                       ),
                     ),
                     child: Text(
-                      'แก้ไข',
+                      'ยืนยัน',
                       style: TextStyle(
                         fontWeight: FontWeight.bold,
                         color: Colors.black,
