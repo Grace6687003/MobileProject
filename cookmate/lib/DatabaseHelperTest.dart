@@ -21,19 +21,34 @@ class DatabaseHelperTest {
   }
 
   // ใช้ ฟังก์ชันทดสอบการเชื่อมต่อ home_page
-  static Future<List<Map<String, String>>> fetchRecipes() async {
+  static Future<List<Map<String, String>>> fetchFullyMatchedRecipes() async {
     final conn = await _connectToDatabase();
-    var results = await conn.execute('SELECT * FROM Recipes');
+    var results = await conn.execute('''
+  SELECT r.recipe_id, r.recipe_name, r.recipe_image, r.fav_id
+  FROM Recipes r
+  WHERE r.recipe_id IN (
+    SELECT ri.recipe_id
+    FROM Recipes_Ingredients ri
+    WHERE ri.is_required = TRUE
+    GROUP BY ri.recipe_id
+    HAVING COUNT(*) = (
+      SELECT COUNT(DISTINCT i.ingredient_id)
+      FROM Recipes_Ingredients ri2
+      JOIN Ingredient i ON ri2.ingredient_id = i.ingredient_id
+      WHERE (i.exp_date IS NOT NULL OR i.description IS NOT NULL)
+        AND ri2.is_required = TRUE
+        AND ri2.recipe_id = ri.recipe_id
+    )
+  )
+''');
 
-    List<Map<String, String>> Recipes =
-        results.rows.map((row) {
-          return row.assoc().map(
-            (key, value) => MapEntry(key, value ?? ''),
-          ); // แปลง null เป็น string ว่าง
-        }).toList();
-    print(Recipes);
+    List<Map<String, String>> recipes =
+        results.rows
+            .map((row) => row.assoc().map((k, v) => MapEntry(k, v ?? '')))
+            .toList();
+
     await conn.close();
-    return Recipes;
+    return recipes;
   }
 
   // ใช้ ดึงข้อมูลวัตถุดิบตามหมวดหมู่ (เช่น "เนื้อสัตว์")   add_ingredient_page
@@ -64,10 +79,13 @@ class DatabaseHelperTest {
   static Future<List<Map<String, dynamic>>> fetchUserIngredientsOnly() async {
     final conn = await _connectToDatabase();
 
-    // ดึงเฉพาะวัตถุดิบที่ผู้ใช้เคยเพิ่มข้อมูล (expDate หรือ description ต้องไม่ว่าง)
+    // เพิ่ม ORDER BY ให้เรียงตาม exp_Date จากใกล้หมดอายุมากสุดไปไกล และ NULL อยู่ล่างสุด
     var results = await conn.execute('''
     SELECT * FROM Ingredient 
-    WHERE exp_Date IS NOT NULL OR description IS NOT NULL
+    WHERE exp_date IS NOT NULL OR description IS NOT NULL
+    ORDER BY 
+      CASE WHEN exp_date IS NULL THEN 1 ELSE 0 END,
+      exp_date ASC
   ''');
 
     List<Map<String, dynamic>> ingredients =
@@ -140,5 +158,22 @@ class DatabaseHelperTest {
 
     await conn.close();
     return ingredients;
+  }
+
+  static Future<void> updateFavoriteStatus({
+    required String recipeId,
+    required bool isFavorite,
+  }) async {
+    final conn = await _connectToDatabase(); // เรียกใช้ฐานข้อมูล
+    await conn.execute(
+      '''
+    UPDATE Recipes
+    SET fav_id = :favId
+    WHERE recipe_id = :recipeId
+    ''',
+      {"favId": isFavorite ? 1 : 0, "recipeId": recipeId},
+    );
+
+    await conn.close();
   }
 }

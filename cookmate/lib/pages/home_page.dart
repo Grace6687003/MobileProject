@@ -456,60 +456,86 @@ import '../widgets/menu_item_card.dart';
 import '../pages/detail_page.dart';
 import '../widgets/bottom_navbar.dart';
 import '../widgets/home_appbar.dart';
-import 'package:cookmate/DatabaseHelper.dart';
+// import 'package:cookmate/DatabaseHelper.dart';
 import 'package:cookmate/DatabaseHelperTest.dart';
 
-class HomePage extends StatelessWidget {
+
+
+class HomePage extends StatefulWidget {
   const HomePage({super.key});
 
   @override
-  Widget build(BuildContext context) {
-    final ingredients = [
-      IngredientModel(
-        id: 1,
-        ingredientId: 2,
-        name: 'ไข่ไก่',
-        imagePath: 'assets/images/categories/egg.png',
-        expDate: DateTime(2025, 3, 30),
-      ),
-      IngredientModel(
-        id: 2,
-        ingredientId: 3,
-        name: 'หมู',
-        imagePath: 'assets/images/categories/meat.png',
-        expDate: DateTime(2025, 4, 5),
-      ),
-      IngredientModel(
-        id: 3,
-        ingredientId: 4,
-        name: 'ผักกาด',
-        imagePath: 'assets/images/categories/vegetable.png',
-        expDate: DateTime(2025, 3, 25),
-      ),
-    ];
+  State<HomePage> createState() => _HomePageState();
+}
 
-    Widget goCard(VoidCallback onTap) {
-      return GestureDetector(
-        onTap: onTap,
-        child: Container(
-          width: 64,
-          height: 64,
-          margin: const EdgeInsets.only(right: 16),
-          decoration: BoxDecoration(
-            color: const Color(0xFFF9F9F9),
-            shape: BoxShape.circle,
-          ),
-          child: Center(
-            child: Image.asset(
-              'assets/images/icon/go.png',
-              width: 40,
-              height: 40,
-            ),
+class _HomePageState extends State<HomePage> {
+  late Future<List<Map<String, String>>> _recipesFuture;
+  late Future<List<Map<String, dynamic>>> _ingredientsFuture;
+
+  @override
+  void initState() {
+    super.initState();
+    _refreshRecipes();
+    _refreshIngredients();
+  }
+
+  void _refreshRecipes() {
+    setState(() {
+      _recipesFuture = DatabaseHelperTest.fetchFullyMatchedRecipes();
+    });
+  }
+
+  void _refreshIngredients() {
+    setState(() {
+      _ingredientsFuture = DatabaseHelperTest.fetchUserIngredientsOnly();
+    });
+  }
+
+  void _confirmDeleteIngredient(String ingredientName) {
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: Text('คุณแน่ใจหรือไม่ว่าต้องการลบรายละเอียดของ "$ingredientName" ?'),
+        action: SnackBarAction(
+          label: 'ยืนยัน',
+          textColor: Colors.red,
+          onPressed: () async {
+            await DatabaseHelperTest.clearIngredientDetails(
+              ingredientName: ingredientName,
+            );
+            _refreshIngredients();
+            ScaffoldMessenger.of(context).showSnackBar(
+              const SnackBar(content: Text('ลบรายละเอียดเรียบร้อยแล้ว')),
+            );
+          },
+        ),
+      ),
+    );
+  }
+
+  Widget goCard(VoidCallback onTap) {
+    return GestureDetector(
+      onTap: onTap,
+      child: Container(
+        width: 64,
+        height: 64,
+        margin: const EdgeInsets.only(right: 16),
+        decoration: BoxDecoration(
+          color: const Color(0xFFF9F9F9),
+          shape: BoxShape.circle,
+        ),
+        child: Center(
+          child: Image.asset(
+            'assets/images/icon/go.png',
+            width: 40,
+            height: 40,
           ),
         ),
-      );
-    }
+      ),
+    );
+  }
 
+  @override
+  Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: const Color(0xFFF9F9F9),
       appBar: HomeAppBar(title: 'COOKMATE'),
@@ -531,48 +557,49 @@ class HomePage extends StatelessWidget {
               ),
             ),
             const SizedBox(height: 17),
-
             FutureBuilder<List<Map<String, String>>>(
-              future: DatabaseHelperTest.fetchRecipes(),
+              future: _recipesFuture,
               builder: (context, snapshot) {
                 if (snapshot.connectionState == ConnectionState.waiting) {
                   return const Center(child: CircularProgressIndicator());
                 }
-
                 if (snapshot.hasError) {
-                  return Center(child: Text('Error: ${snapshot.error}'));
+                  return Center(child: Text('Error: \${snapshot.error}'));
                 }
-
                 if (!snapshot.hasData || snapshot.data!.isEmpty) {
-                  return const Center(child: Text('No Recipes found'));
+                  return const Center(
+                    child: Text('ไม่มีเมนูที่ตรงกับวัตถุดิบของคุณ'),
+                  );
                 }
 
                 var recipes = snapshot.data!;
 
                 return SizedBox(
-                  // ✅ เพิ่ม SizedBox กำหนดความสูง
-                  height: 270, // ปรับได้ตามขนาด MenuCard
+                  height: 257.7,
                   child: ListView.builder(
-                    scrollDirection:
-                        Axis.horizontal, // ✅ เพิ่มแนวนอนให้เหมือนของเดิม
+                    scrollDirection: Axis.horizontal,
                     padding: const EdgeInsets.symmetric(horizontal: 16),
-                    itemCount: 5,
+                    itemCount: recipes.length > 4 ? 5 : recipes.length + 1,
                     itemBuilder: (context, index) {
-                      if (index < 4) {
+                      if (index < (recipes.length > 4 ? 4 : recipes.length)) {
                         var recipe = recipes[index];
-                        return MenuCard(
-                          name: recipe['recipe_name'] ?? 'No name',
-                          imagePath:
-                              recipe['recipe_image'] ??
-                              'assets/images/default.png',
-                          onTap: () {
-                            Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                builder: (_) => const DetailPage(),
-                              ),
-                            );
-                          },
+                        return Container(
+                          margin: const EdgeInsets.only(right: 12),
+                          child: MenuCard(
+                            recipeId: recipe['recipe_id'] ?? '',
+                            name: recipe['recipe_name'] ?? '',
+                            imagePath: recipe['recipe_image'] ?? '',
+                            isFavorited: recipe['fav_id'] == '1',
+                            onTap: () {
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (_) => const DetailPage(),
+                                ),
+                              );
+                            },
+                            onToggleFavorite: _refreshRecipes,
+                          ),
                         );
                       } else {
                         return goCard(() {
@@ -584,7 +611,6 @@ class HomePage extends StatelessWidget {
                 );
               },
             ),
-
             const SizedBox(height: 24),
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 16),
@@ -598,28 +624,55 @@ class HomePage extends StatelessWidget {
               ),
             ),
             const SizedBox(height: 17),
+            FutureBuilder<List<Map<String, dynamic>>>(
+              future: _ingredientsFuture,
+              builder: (context, snapshot) {
+                if (snapshot.connectionState == ConnectionState.waiting) {
+                  return const Center(child: CircularProgressIndicator());
+                }
+                if (snapshot.hasError) {
+                  return Center(child: Text('Error: \${snapshot.error}'));
+                }
+                if (!snapshot.hasData || snapshot.data!.isEmpty) {
+                  return const Center(
+                    child: Text('ยังไม่มีวัตถุดิบที่เพิ่มไว้'),
+                  );
+                }
 
-            SizedBox(
-              height: 128,
-              child: ListView.builder(
-                scrollDirection: Axis.horizontal,
-                padding: const EdgeInsets.only(left: 16),
-                itemCount: ingredients.length + 1,
-                itemBuilder: (context, index) {
-                  if (index < ingredients.length) {
-                    return IngredientCard(
-                      ingredient: ingredients[index],
-                      onDelete: () {
-                        // ลบวัตถุดิบ
-                      },
-                    );
-                  } else {
-                    return goCard(() {
-                      // ไปยังหน้าวัตถุดิบทั้งหมด
-                    });
-                  }
-                },
-              ),
+                final ingredientData = snapshot.data!;
+
+                return SizedBox(
+                  height: 128,
+                  child: ListView.builder(
+                    scrollDirection: Axis.horizontal,
+                    padding: const EdgeInsets.only(left: 16),
+                    itemCount:
+                        ingredientData.length > 4 ? 5 : ingredientData.length + 1,
+                    itemBuilder: (context, index) {
+                      if (index < (ingredientData.length > 4 ? 4 : ingredientData.length)) {
+                        final item = ingredientData[index];
+                        return IngredientCard(
+                          ingredient: IngredientModel(
+                            id: index,
+                            ingredientId: 0,
+                            name: item['ingredient_name'],
+                            imagePath: item['Categories_image'],
+                            expDate: item['exp_date'] != null
+                                ? DateTime.tryParse(item['exp_date']) ?? DateTime.now()
+                                : DateTime.now(),
+
+                          ),
+                          onDelete: () => _confirmDeleteIngredient(item['ingredient_name']),
+                        );
+                      } else {
+                        return goCard(() {
+                          // ไปยังหน้าวัตถุดิบทั้งหมด
+                        });
+                      }
+                    },
+                  ),
+                );
+              },
             ),
           ],
         ),

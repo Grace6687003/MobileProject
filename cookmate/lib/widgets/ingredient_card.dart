@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import '../models/ingredient_model.dart';
+import 'package:cookmate/DatabaseHelperTest.dart'; 
 
 class IngredientCard extends StatelessWidget {
   final IngredientModel ingredient;
@@ -14,9 +15,13 @@ class IngredientCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      width: 246,
+      width: 254,
       height: 128,
-      margin: const EdgeInsets.only(right: 10, left: 10, bottom: 8), // เพิ่มการเว้นจากขอบซ้าย
+      margin: const EdgeInsets.only(
+        right: 0,
+        left: 10,
+        bottom: 8,
+      ), // เพิ่มการเว้นจากขอบซ้าย
       padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 10),
       decoration: BoxDecoration(
         color: const Color(0xffc3e090),
@@ -53,16 +58,20 @@ class IngredientCard extends StatelessWidget {
             ),
           ),
           const SizedBox(width: 14), // ระยะห่างระหว่างรูปกับข้อมูล (20px)
-
           // ข้อมูลวัตถุดิบ
           Expanded(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
-              mainAxisAlignment: MainAxisAlignment.start, // ขยับให้เริ่มที่ด้านบน
+              mainAxisAlignment:
+                  MainAxisAlignment.start, // ขยับให้เริ่มที่ด้านบน
               children: [
                 // ชื่อวัตถุดิบ
                 Padding(
-                  padding: const EdgeInsets.only(top: 10, bottom: 0, right: 0), // ขยับขึ้นเล็กน้อย
+                  padding: const EdgeInsets.only(
+                    top: 10,
+                    bottom: 0,
+                    right: 0,
+                  ), // ขยับขึ้นเล็กน้อย
                   child: Text(
                     ingredient.name,
                     style: const TextStyle(
@@ -70,10 +79,11 @@ class IngredientCard extends StatelessWidget {
                       fontFamily: 'NotoSansThai',
                       fontSize: 16,
                     ),
+                    overflow: TextOverflow.ellipsis,  // เพิ่มเพื่อให้แสดง ...
+                    maxLines: 1,  // ให้แสดงแค่บรรทัดเดียว
                   ),
                 ),
                 const SizedBox(height: 0), // ช่องว่างระหว่างชื่อและสถานะ
-
                 // สถานะวัตถุดิบ
                 Text(
                   ingredient.status, // แสดงสถานะ
@@ -94,7 +104,13 @@ class IngredientCard extends StatelessWidget {
           Align(
             alignment: Alignment.bottomCenter, // ทำให้ปุ่มอยู่ล่างสุด
             child: IconButton(
-              onPressed: onDelete, // ลบวัตถุดิบจาก UI
+              onPressed: () async {
+                await DatabaseHelperTest.clearIngredientDetails(
+                  ingredientName: ingredient.name,
+                );
+                onDelete(); // ลบจาก UI หรือ refresh
+              },
+              // ลบวัตถุดิบจาก UI
               icon: const Icon(Icons.delete, color: Colors.red),
               iconSize: 34,
               padding: EdgeInsets.only(right: 20),
