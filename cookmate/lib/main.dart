@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'pages/home_page.dart';
+import 'pages/splashScreen.dart'; 
 import 'DatabaseHelper.dart';
 import 'DatabaseHelperTest.dart';
-import '../models/menu_from_ingredients_model.dart';
 
 void main() {
   // ทดสอบการเชื่อมต่อฐานข้อมูล
@@ -20,10 +20,7 @@ class CookMateApp extends StatelessWidget {
       theme: ThemeData(
         fontFamily: 'NotoSansThai',
       ),
-      initialRoute: '/home', // ระบุให้เริ่มต้นที่ /home
-      routes: {
-        '/home': (context) => HomePage(), // ✅ เพิ่ม route นี้
-      },
+      home: const SplashScreen(), 
       debugShowCheckedModeBanner: false,
     );
   }

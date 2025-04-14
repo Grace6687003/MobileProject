@@ -80,7 +80,7 @@ class _MyIngredientsPageState extends State<MyIngredientsPage> {
       ),
       bottomNavigationBar: Theme(
         data: Theme.of(context).copyWith(canvasColor: Color(0xFF2A2C41)),
-        child: BottomNavBar(),
+        child: BottomNavBar(currentIndex: 2),
       ),
 
       body: SingleChildScrollView(

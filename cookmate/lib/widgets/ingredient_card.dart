@@ -1,123 +1,133 @@
 import 'package:flutter/material.dart';
 import '../models/ingredient_model.dart';
-import 'package:cookmate/DatabaseHelperTest.dart'; 
+import 'package:cookmate/DatabaseHelperTest.dart';
+import 'package:cookmate/pages/ingredients/edit_ingredient_page.dart';
 
 class IngredientCard extends StatelessWidget {
   final IngredientModel ingredient;
   final VoidCallback onDelete;
+  final VoidCallback onUpdate; // ✅ โหลดข้อมูลใหม่ทุกครั้งหลังกลับจากแก้ไข
 
   const IngredientCard({
     super.key,
     required this.ingredient,
     required this.onDelete,
+    required this.onUpdate,
   });
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      width: 254,
-      height: 128,
-      margin: const EdgeInsets.only(
-        right: 0,
-        left: 10,
-        bottom: 8,
-      ), // เพิ่มการเว้นจากขอบซ้าย
-      padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 10),
-      decoration: BoxDecoration(
-        color: const Color(0xffc3e090),
-        borderRadius: BorderRadius.circular(100),
-        boxShadow: [
-          BoxShadow(
-            color: Colors.black.withOpacity(0.25), // สีของเงา
-            spreadRadius: 0, // ความกว้างของเงา
-            blurRadius: 6, // ความเบลอของเงา
-            offset: const Offset(0, 4), // การขยับเงาในแนวนอนและแนวตั้ง
-          ),
-        ],
-      ),
-      child: Row(
-        children: [
-          // รูปวัตถุดิบ
-          Container(
-            width: 100, // ขนาดของ Container เป็น 100x100
-            height: 100, // ขนาดของ Container เป็น 100x100
-            decoration: BoxDecoration(
-              color: Colors.white, // เพิ่มสีขาวให้รอบๆ
-              borderRadius: BorderRadius.circular(50), // ทำให้ขอบกลม
+    return GestureDetector(
+      onTap: () {
+        Navigator.push(
+          context,
+          MaterialPageRoute(
+            builder: (context) => EditIngredientPage(
+              ingredientName: ingredient.name,
+              description: ingredient.description,
+              expDate: ingredient.expDate?.toIso8601String(),
+              imagePath: ingredient.imagePath.isNotEmpty
+                  ? ingredient.imagePath
+                  : 'assets/images/default.png',
             ),
-            child: Center(
-              child: ClipRRect(
-                borderRadius: BorderRadius.circular(50), // ทำให้รูปกลม
-                child: Image.asset(
-                  ingredient.imagePath,
-                  width: 80, // ขนาดของรูป 80x80
-                  height: 80, // ขนาดของรูป 80x80
-                  fit: BoxFit.cover, // รักษาสัดส่วนของรูป
+          ),
+        ).then((_) {
+          onUpdate(); // ✅ โหลดใหม่เสมอ ไม่สนว่าแก้หรือไม่
+        });
+      },
+      child: Container(
+        width: 254,
+        height: 128,
+        margin: const EdgeInsets.only(right: 0, left: 10, bottom: 8),
+        padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 10),
+        decoration: BoxDecoration(
+          color: const Color(0xffc3e090),
+          borderRadius: BorderRadius.circular(100),
+          boxShadow: [
+            BoxShadow(
+              color: Colors.black.withOpacity(0.25),
+              spreadRadius: 0,
+              blurRadius: 6,
+              offset: const Offset(0, 4),
+            ),
+          ],
+        ),
+        child: Row(
+          children: [
+            // รูปวัตถุดิบ
+            Container(
+              width: 100,
+              height: 100,
+              decoration: BoxDecoration(
+                color: Colors.white,
+                borderRadius: BorderRadius.circular(50),
+              ),
+              child: Center(
+                child: ClipRRect(
+                  borderRadius: BorderRadius.circular(50),
+                  child: Image.asset(
+                    ingredient.imagePath.isNotEmpty
+                        ? ingredient.imagePath
+                        : 'assets/images/default.png',
+                    width: 80,
+                    height: 80,
+                    fit: BoxFit.cover,
+                  ),
                 ),
               ),
             ),
-          ),
-          const SizedBox(width: 14), // ระยะห่างระหว่างรูปกับข้อมูล (20px)
-          // ข้อมูลวัตถุดิบ
-          Expanded(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              mainAxisAlignment:
-                  MainAxisAlignment.start, // ขยับให้เริ่มที่ด้านบน
-              children: [
-                // ชื่อวัตถุดิบ
-                Padding(
-                  padding: const EdgeInsets.only(
-                    top: 10,
-                    bottom: 0,
-                    right: 0,
-                  ), // ขยับขึ้นเล็กน้อย
-                  child: Text(
-                    ingredient.name,
-                    style: const TextStyle(
-                      fontWeight: FontWeight.w500,
-                      fontFamily: 'NotoSansThai',
-                      fontSize: 16,
+            const SizedBox(width: 14),
+            // ข้อมูลวัตถุดิบ
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                mainAxisAlignment: MainAxisAlignment.start,
+                children: [
+                  Padding(
+                    padding: const EdgeInsets.only(top: 10, bottom: 0),
+                    child: Text(
+                      ingredient.name,
+                      style: const TextStyle(
+                        fontWeight: FontWeight.w500,
+                        fontFamily: 'NotoSansThai',
+                        fontSize: 16,
+                      ),
+                      overflow: TextOverflow.ellipsis,
+                      maxLines: 1,
                     ),
-                    overflow: TextOverflow.ellipsis,  // เพิ่มเพื่อให้แสดง ...
-                    maxLines: 1,  // ให้แสดงแค่บรรทัดเดียว
                   ),
-                ),
-                const SizedBox(height: 0), // ช่องว่างระหว่างชื่อและสถานะ
-                // สถานะวัตถุดิบ
-                Text(
-                  ingredient.status, // แสดงสถานะ
-                  style: TextStyle(
-                    color: Color(0xFFE23D3D),
-                    fontSize: 14,
-                    fontFamily: 'NotoSansThai',
-                    fontWeight: FontWeight.w500,
+                  Text(
+                    ingredient.status,
+                    style: const TextStyle(
+                      color: Color(0xFFE23D3D),
+                      fontSize: 14,
+                      fontFamily: 'NotoSansThai',
+                      fontWeight: FontWeight.w500,
+                    ),
+                    softWrap: false,
+                    overflow: TextOverflow.visible,
                   ),
-                  softWrap: false, // ป้องกันการขึ้นบรรทัดใหม่
-                  overflow: TextOverflow.visible, // ข้อความไม่หาย
-                ),
-              ],
+                ],
+              ),
             ),
-          ),
-
-          // ปุ่มลบ - ถังขยะ
-          Align(
-            alignment: Alignment.bottomCenter, // ทำให้ปุ่มอยู่ล่างสุด
-            child: IconButton(
-              onPressed: () async {
-                await DatabaseHelperTest.clearIngredientDetails(
-                  ingredientName: ingredient.name,
-                );
-                onDelete(); // ลบจาก UI หรือ refresh
-              },
-              // ลบวัตถุดิบจาก UI
-              icon: const Icon(Icons.delete, color: Colors.red),
-              iconSize: 34,
-              padding: EdgeInsets.only(right: 20),
-              constraints: const BoxConstraints(),
+            // ปุ่มลบ
+            Align(
+              alignment: Alignment.bottomCenter,
+              child: IconButton(
+                onPressed: () async {
+                  await DatabaseHelperTest.clearIngredientDetails(
+                    ingredientName: ingredient.name,
+                  );
+                  onDelete(); // ✅ ลบแล้วรีโหลด
+                },
+                icon: const Icon(Icons.delete, color: Colors.red),
+                iconSize: 34,
+                padding: const EdgeInsets.only(right: 20),
+                constraints: const BoxConstraints(),
+              ),
             ),
-          ),
-        ],
+          ],
+        ),
       ),
     );
   }

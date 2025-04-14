@@ -1,211 +1,129 @@
-// import 'package:flutter/material.dart';
-// import '../pages/home_page.dart';
-// import '../pages/search_page.dart';
-// import '../pages/ingredients/myingredients_page.dart';
-// import '../pages/fav_page.dart';
-
-// class BottomNavBar extends StatefulWidget {
-//   const BottomNavBar({super.key});
-
-//   @override
-//   _BottomNavBarState createState() => _BottomNavBarState();
-// }
-
-// class _BottomNavBarState extends State<BottomNavBar> {
-//   int _currentIndex = 0;
-
-//   // หน้าแต่ละหน้า
-//   final List<Widget> _pages = [
-//      HomePage(),
-//     SearchPage(),
-//     MyIngredientsPage(),
-//     FavPage(),
-//   ];
-
-//   // ฟังก์ชันเปลี่ยนหน้า
-//   void _onItemTapped(int index) {
-//     setState(() {
-//       _currentIndex = index;  // เปลี่ยนค่าของ _currentIndex เมื่อเลือกหน้า
-//     });
-//   }
-
-//   @override
-//   Widget build(BuildContext context) {
-//     return Scaffold(
-//       appBar: AppBar(
-//         title: const Text('Bottom Navigation Bar with Navigator'),
-//       ),
-//       // แสดงหน้าที่เลือกจาก _pages[_currentIndex]
-//       body: _pages[_currentIndex], 
-//       bottomNavigationBar: BottomNavigationBar(
-//         currentIndex: _currentIndex,
-//         onTap: _onItemTapped,
-//         items: [
-//           BottomNavigationBarItem(
-//             icon: SizedBox(
-//               height: 24,
-//               child: Image(
-//                 image: AssetImage(_currentIndex == 0
-//                     ? 'assets/images/icon/home_sl.png'  // เปลี่ยนไอคอนเมื่อเลือก
-//                     : 'assets/images/icon/home.png'),  // ใช้ไอคอนปกติเมื่อไม่ได้เลือก
-//               ),
-//             ),
-//             label: 'home',
-//           ),
-//           BottomNavigationBarItem(
-//             icon: SizedBox(
-//               height: 24,
-//               child: Image(
-//                 image: AssetImage(_currentIndex == 1
-//                     ? 'assets/images/icon/search_sl.png'
-//                     : 'assets/images/icon/search.png'),
-//               ),
-//             ),
-//             label: 'search',
-//           ),
-//           BottomNavigationBarItem(
-//             icon: SizedBox(
-//               height: 24,
-//               child: Image(
-//                 image: AssetImage(_currentIndex == 2
-//                     ? 'assets/images/icon/my_ingredient_sl.png'
-//                     : 'assets/images/icon/my_ingredient.png'),
-//               ),
-//             ),
-//             label: 'my ingredient',
-//           ),
-//           BottomNavigationBarItem(
-//             icon: SizedBox(
-//               height: 24,
-//               child: Image(
-//                 image: AssetImage(_currentIndex == 3
-//                     ? 'assets/images/icon/favorite_sl.png'
-//                     : 'assets/images/icon/favorite.png'),
-//               ),
-//             ),
-//             label: 'my favorite',
-//           ),
-//         ],
-//         selectedItemColor: Colors.white,
-//         unselectedItemColor: Color(0xFF9195B7),
-//         backgroundColor: Colors.transparent,
-//         type: BottomNavigationBarType.fixed,
-//         showSelectedLabels: false,
-//         showUnselectedLabels: false,
-//         elevation: 0,
-//       ),
-//     );
-//   }
-// }
-
-
 import 'package:flutter/material.dart';
 import '../pages/home_page.dart';
 import '../pages/search_page.dart';
 import '../pages/ingredients/myingredients_page.dart';
 import '../pages/fav_page.dart';
+import 'package:cookmate/DatabaseHelperTest.dart';
 
-class BottomNavBar extends StatefulWidget {
-  const BottomNavBar({super.key});
+class BottomNavBar extends StatelessWidget {
+  final List<Map<String, String>>? recommendedMenus;
+  final int currentIndex;
 
-  @override
-  _BottomNavBarState createState() => _BottomNavBarState();
-}
+  const BottomNavBar({
+    super.key,
+    this.recommendedMenus,
+    this.currentIndex = 0,
+  });
 
-class _BottomNavBarState extends State<BottomNavBar> {
-  int _currentIndex = 0;
-
-  void _onItemTapped(int index) {
-    // ✅ ไม่ต้องใช้ setState เพราะจะเปลี่ยนหน้าอยู่แล้ว
+  void _onItemTapped(BuildContext context, int index) async {
     switch (index) {
       case 0:
         Navigator.pushReplacement(
           context,
-          MaterialPageRoute(builder: (context) => const HomePage()),
+          MaterialPageRoute(builder: (_) => const HomePage()),
         );
         break;
+
       case 1:
+        final randomMenus = await DatabaseHelperTest.fetchRandomMenus();
         Navigator.pushReplacement(
           context,
-          MaterialPageRoute(builder: (context) => const SearchPage()),
+          MaterialPageRoute(
+            builder: (_) => SearchPage(
+              recommendedMenus: randomMenus,
+              initialFilter: null,
+            ),
+          ),
         );
         break;
+
       case 2:
         Navigator.pushReplacement(
           context,
-          MaterialPageRoute(builder: (context) => MyIngredientsPage()),
+          MaterialPageRoute(builder: (_) => MyIngredientsPage()),
         );
         break;
+
       case 3:
         Navigator.pushReplacement(
           context,
-          MaterialPageRoute(builder: (context) => FavPage()),
+          MaterialPageRoute(builder: (_) => FavPage()),
         );
         break;
     }
   }
 
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      decoration: const BoxDecoration(
-        color: Color(0xFF2A2C41),
-        border: Border(
-          top: BorderSide(
-            color: Colors.black26,
-            width: 1,
-          ),
+  Widget _buildIcon(String selectedPath, String unselectedPath, bool isSelected) {
+    return SizedBox(
+      width: 30,
+      height: 30,
+      child: Padding(
+        padding: const EdgeInsets.all(2),
+        child: Image.asset(
+          isSelected ? selectedPath : unselectedPath,
+          fit: BoxFit.contain,
         ),
-      ),
-      child: BottomNavigationBar(
-        items: const [
-          BottomNavigationBarItem(
-            icon: SizedBox(
-              height: 24,
-              child: Image(
-                image: AssetImage('assets/images/icon/home.png'),
-              ),
-            ),
-            label: '',
-          ),
-          BottomNavigationBarItem(
-            icon: SizedBox(
-              height: 24,
-              child: Image(
-                image: AssetImage('assets/images/icon/search.png'),
-              ),
-            ),
-            label: '',
-          ),
-          BottomNavigationBarItem(
-            icon: SizedBox(
-              height: 24,
-              child: Image(
-                image: AssetImage('assets/images/icon/my_ingredient.png'),
-              ),
-            ),
-            label: '',
-          ),
-          BottomNavigationBarItem(
-            icon: SizedBox(
-              height: 24,
-              child: Image(
-                image: AssetImage('assets/images/icon/favorite.png'),
-              ),
-            ),
-            label: '',
-          ),
-        ],
-        currentIndex: _currentIndex, // ยังให้ไฮไลต์ปุ่มถูกต้องในอนาคต
-        selectedItemColor: Colors.white,
-        unselectedItemColor: Color(0xFF9195B7),
-        backgroundColor: Colors.transparent,
-        type: BottomNavigationBarType.fixed,
-        showSelectedLabels: false,
-        showUnselectedLabels: false,
-        elevation: 0,
-        onTap: _onItemTapped,
       ),
     );
   }
+
+  @override
+Widget build(BuildContext context) {
+  final safeIndex = (currentIndex >= 0 && currentIndex <= 3) ? currentIndex : -1;
+
+  return Container(
+    decoration: const BoxDecoration(
+      color: Color(0xFF2A2C41),
+      border: Border(
+        top: BorderSide(color: Colors.black26, width: 1),
+      ),
+    ),
+    child: BottomNavigationBar(
+      items: [
+        BottomNavigationBarItem(
+          icon: _buildIcon(
+            'assets/images/icon/home_sl.png',
+            'assets/images/icon/home.png',
+            safeIndex == 0,
+          ),
+          label: '',
+        ),
+        BottomNavigationBarItem(
+          icon: _buildIcon(
+            'assets/images/icon/search_sl.png',
+            'assets/images/icon/search.png',
+            safeIndex == 1,
+          ),
+          label: '',
+        ),
+        BottomNavigationBarItem(
+          icon: _buildIcon(
+            'assets/images/icon/my_ingredient_sl.png',
+            'assets/images/icon/my_ingredient.png',
+            safeIndex == 2,
+          ),
+          label: '',
+        ),
+        BottomNavigationBarItem(
+          icon: _buildIcon(
+            'assets/images/icon/favorite_sl.png',
+            'assets/images/icon/favorite.png',
+            safeIndex == 3,
+          ),
+          label: '',
+        ),
+      ],
+      currentIndex: safeIndex >= 0 ? safeIndex : 0, // ❗️ต้องส่งค่าที่ valid
+      selectedItemColor: Colors.white,
+      unselectedItemColor: const Color(0xFF9195B7),
+      backgroundColor: Colors.transparent,
+      type: BottomNavigationBarType.fixed,
+      showSelectedLabels: false,
+      showUnselectedLabels: false,
+      elevation: 0,
+      onTap: (index) => _onItemTapped(context, index),
+    ),
+  );
+}
+
 }

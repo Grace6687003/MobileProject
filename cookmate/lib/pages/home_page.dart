@@ -1,465 +1,17 @@
-// import 'package:flutter/material.dart';
-// import '../models/menu_from_ingredients_model.dart';
-// import '../models/ingredient_model.dart';
-// import '../widgets/menu_card.dart';
-// import '../widgets/ingredient_card.dart';
-// import '../widgets/menu_item_card.dart';
-// import '../pages/detail_page.dart';
-// import '../widgets/bottom_navbar.dart';
-// import '../widgets/home_appbar.dart';
-
-// class HomePage extends StatelessWidget {
-//   const HomePage({super.key});
-
-//   @override
-//   Widget build(BuildContext context) {
-//     final menus = MenuFromIngredientsModel.getMenus();
-
-//     final ingredients = [
-//       IngredientModel(
-//         id: 1,
-//         ingredientId: 2,
-//         name: 'ไข่ไก่',
-//         imagePath: 'assets/images/categories/egg.png',
-//         expDate: DateTime(2025, 3, 30),
-//       ),
-//       IngredientModel(
-//         id: 2,
-//         ingredientId: 3,
-//         name: 'หมู',
-//         imagePath: 'assets/images/categories/meat.png',
-//         expDate: DateTime(2025, 4, 5),
-//       ),
-//       IngredientModel(
-//         id: 3,
-//         ingredientId: 4,
-//         name: 'ผักกาด',
-//         imagePath: 'assets/images/categories/vegetable.png',
-//         expDate: DateTime(2025, 3, 25),
-//       ),
-//     ];
-
-//     Widget goCard(VoidCallback onTap) {
-//       return GestureDetector(
-//         onTap: onTap,
-//         child: Container(
-//           width: 64,
-//           height: 64,
-//           margin: const EdgeInsets.only(right: 16),
-//           decoration: BoxDecoration(
-//             color: const Color(0xFFF9F9F9),
-//             shape: BoxShape.circle,
-//           ),
-//           child: Center(
-//             child: Image.asset(
-//               'assets/images/icon/go.png',
-//               width: 40,
-//               height: 40,
-//             ),
-//           ),
-//         ),
-//       );
-//     }
-
-//     return Scaffold(
-//       backgroundColor: const Color(0xFFF9F9F9),
-//       appBar: HomeAppBar(title: 'COOKMATE'),
-//       bottomNavigationBar: BottomNavBar(),
-//       body: SingleChildScrollView(
-//         padding: const EdgeInsets.only(top: 30),
-//         child: Column(
-//           crossAxisAlignment: CrossAxisAlignment.start,
-//           children: [
-//             const Padding(
-//               padding: EdgeInsets.symmetric(horizontal: 16),
-//               child: Text(
-//                 'เมนูจากวัตถุดิบของฉัน',
-//                 style: TextStyle(
-//                   fontSize: 22,
-//                   fontWeight: FontWeight.w800,
-//                   fontFamily: 'NotoSansThai',
-//                 ),
-//               ),
-//             ),
-//             const SizedBox(height: 17),
-
-//             SizedBox(
-//               height: 257.7,
-//               child: ListView.separated(
-//                 scrollDirection: Axis.horizontal,
-//                 padding: const EdgeInsets.symmetric(horizontal: 16),
-//                 itemCount: menus.length + 1,
-//                 separatorBuilder: (_, __) => const SizedBox(width: 12),
-//                 itemBuilder: (context, index) {
-//                   if (index < menus.length) {
-//                     return MenuCard(
-//                       menu: menus[index],
-//                       onTap: () {
-//                         Navigator.push(
-//                           context,
-//                           MaterialPageRoute(
-//                             builder: (context) => const DetailPage(),
-//                           ),
-//                         );
-//                       },
-//                     );
-//                   } else {
-//                     return goCard(() {
-//                       // ไปยังหน้าเมนูทั้งหมด
-//                     });
-//                   }
-//                 },
-//               ),
-//             ),
-
-//             const SizedBox(height: 24),
-//             Padding(
-//               padding: const EdgeInsets.symmetric(horizontal: 16),
-//               child: Text(
-//                 'วัตถุดิบของฉัน',
-//                 style: TextStyle(
-//                   fontSize: 22,
-//                   fontWeight: FontWeight.w800,
-//                   fontFamily: 'NotoSansThai',
-//                 ),
-//               ),
-//             ),
-//             const SizedBox(height: 17),
-
-//             SizedBox(
-//               height: 128,
-//               child: ListView.builder(
-//                 scrollDirection: Axis.horizontal,
-//                 padding: const EdgeInsets.only(left: 16),
-//                 itemCount: ingredients.length + 1,
-//                 itemBuilder: (context, index) {
-//                   if (index < ingredients.length) {
-//                     return IngredientCard(
-//                       ingredient: ingredients[index],
-//                       onDelete: () {
-//                         // ลบวัตถุดิบ
-//                       },
-//                     );
-//                   } else {
-//                     return goCard(() {
-//                       // ไปยังหน้าวัตถุดิบทั้งหมด
-//                     });
-//                   }
-//                 },
-//               ),
-//             ),
-
-//             const SizedBox(height: 24),
-//             Padding(
-//               padding: const EdgeInsets.only(left: 16, right: 8),
-//               child: Row(
-//                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
-//                 children: [
-//                   const Text(
-//                     'เมนูโปรด',
-//                     style: TextStyle(
-//                       fontSize: 22,
-//                       fontWeight: FontWeight.w800,
-//                       fontFamily: 'NotoSansThai',
-//                     ),
-//                   ),
-//                 ],
-//               ),
-//             ),
-//             const SizedBox(height: 17),
-
-//             SizedBox(
-//               height: 120,
-//               child: ListView.builder(
-//                 scrollDirection: Axis.horizontal,
-//                 padding: const EdgeInsets.only(left: 16),
-//                 itemCount: menus.length + 1,
-//                 itemBuilder: (context, index) {
-//                   if (index < menus.length) {
-//                     final menu = menus[index];
-//                     return MenuItemCard(
-//                       imagePath: menu.imagePath,
-//                       name: menu.name,
-//                       onTap: () {
-//                         Navigator.push(
-//                           context,
-//                           MaterialPageRoute(
-//                             builder: (context) => const DetailPage(),
-//                           ),
-//                         );
-//                       },
-//                     );
-//                   } else {
-//                     return goCard(() {
-//                       // ไปยังหน้ารายการเมนูโปรดทั้งหมด
-//                     });
-//                   }
-//                 },
-//               ),
-//             ),
-
-//             const SizedBox(height: 24),
-//             Padding(
-//               padding: const EdgeInsets.only(left: 16, right: 8),
-//               child: Row(
-//                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
-//                 children: [
-//                   const Text(
-//                     'เมนูแนะนำ',
-//                     style: TextStyle(
-//                       fontSize: 22,
-//                       fontWeight: FontWeight.w800,
-//                       fontFamily: 'NotoSansThai',
-//                     ),
-//                   ),
-//                 ],
-//               ),
-//             ),
-//             const SizedBox(height: 17),
-
-//             SizedBox(
-//               height: 120,
-//               child: ListView.builder(
-//                 scrollDirection: Axis.horizontal,
-//                 padding: const EdgeInsets.only(left: 16),
-//                 itemCount: menus.length + 1,
-//                 itemBuilder: (context, index) {
-//                   if (index < menus.length) {
-//                     final menu = menus[index];
-//                     return MenuItemCard(
-//                       imagePath: menu.imagePath,
-//                       name: menu.name,
-//                       onTap: () {
-//                         Navigator.push(
-//                           context,
-//                           MaterialPageRoute(
-//                             builder: (context) => const DetailPage(),
-//                           ),
-//                         );
-//                       },
-//                     );
-//                   } else {
-//                     return goCard(() {
-//                       // ไปยังหน้ารายการเมนูแนะนำทั้งหมด
-//                     });
-//                   }
-//                 },
-//               ),
-//             ),
-
-//             const SizedBox(height: 24),
-//             Padding(
-//               padding: const EdgeInsets.only(left: 16, right: 8),
-//               child: Row(
-//                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
-//                 children: [
-//                   const Text(
-//                     'ร้านค้าใกล้ฉัน',
-//                     style: TextStyle(
-//                       fontSize: 22,
-//                       fontWeight: FontWeight.w800,
-//                       fontFamily: 'NotoSansThai',
-//                     ),
-//                   ),
-//                 ],
-//               ),
-//             ),
-//           ],
-//         ),
-//       ),
-//     );
-//   }
-// }
-
-// import 'package:flutter/material.dart';
-
-// import '../models/menu_from_ingredients_model.dart';
-// import '../models/ingredient_model.dart';
-// import '../widgets/menu_card.dart';
-// import '../widgets/ingredient_card.dart';
-// import '../widgets/menu_item_card.dart';
-// import '../pages/detail_page.dart';
-// import '../widgets/bottom_navbar.dart';
-// import '../widgets/home_appbar.dart';
-// // import '../helpers/DatabaseHelper.dart'; // Import DatabaseHelper ที่ใช้เชื่อมต่อฐานข้อมูล
-// import 'package:cookmate/DatabaseHelper.dart';
-
-// class HomePage extends StatelessWidget {
-//   const HomePage({super.key});
-
-//   @override
-//   Widget build(BuildContext context) {
-//     final ingredients = [
-//       IngredientModel(
-//         id: 1,
-//         ingredientId: 2,
-//         name: 'ไข่ไก่',
-//         imagePath: 'assets/images/categories/egg.png',
-//         expDate: DateTime(2025, 3, 30),
-//       ),
-//       IngredientModel(
-//         id: 2,
-//         ingredientId: 3,
-//         name: 'หมู',
-//         imagePath: 'assets/images/categories/meat.png',
-//         expDate: DateTime(2025, 4, 5),
-//       ),
-//       IngredientModel(
-//         id: 3,
-//         ingredientId: 4,
-//         name: 'ผักกาด',
-//         imagePath: 'assets/images/categories/vegetable.png',
-//         expDate: DateTime(2025, 3, 25),
-//       ),
-//     ];
-
-//     Widget goCard(VoidCallback onTap) {
-//       return GestureDetector(
-//         onTap: onTap,
-//         child: Container(
-//           width: 64,
-//           height: 64,
-//           margin: const EdgeInsets.only(right: 16),
-//           decoration: BoxDecoration(
-//             color: const Color(0xFFF9F9F9),
-//             shape: BoxShape.circle,
-//           ),
-//           child: Center(
-//             child: Image.asset(
-//               'assets/images/icon/go.png',
-//               width: 40,
-//               height: 40,
-//             ),
-//           ),
-//         ),
-//       );
-//     }
-
-//     return Scaffold(
-//       backgroundColor: const Color(0xFFF9F9F9),
-//       appBar: HomeAppBar(title: 'COOKMATE'),
-//       bottomNavigationBar: BottomNavBar(),
-//       body: SingleChildScrollView(
-//         padding: const EdgeInsets.only(top: 30),
-//         child: Column(
-//           crossAxisAlignment: CrossAxisAlignment.start,
-//           children: [
-//             const Padding(
-//               padding: EdgeInsets.symmetric(horizontal: 16),
-//               child: Text(
-//                 'เมนูจากวัตถุดิบของฉัน',
-//                 style: TextStyle(
-//                   fontSize: 22,
-//                   fontWeight: FontWeight.w800,
-//                   fontFamily: 'NotoSansThai',
-//                 ),
-//               ),
-//             ),
-//             const SizedBox(height: 17),
-
-//             // ใช้ FutureBuilder เพื่อดึงข้อมูลเมนู
-//             FutureBuilder<List<MenuFromIngredientsModel>>(
-//   future: MenuFromIngredientsModel.getMenus(),  // ดึงข้อมูลเมนูจากฐานข้อมูล
-//   builder: (context, snapshot) {
-//     if (snapshot.connectionState == ConnectionState.waiting) {
-//       return Center(child: CircularProgressIndicator());
-//     } else if (snapshot.hasError) {
-//       return Center(child: Text('Error: ${snapshot.error}'));
-//     } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
-//       return Center(child: Text('No menus found'));
-//     } else {
-//       final menuData = snapshot.data!;
-//       return SizedBox(
-//         height: 257.7,
-//         child: ListView.separated(
-//           scrollDirection: Axis.horizontal,
-//           padding: const EdgeInsets.symmetric(horizontal: 16),
-//           itemCount: menuData.length + 1,
-//           separatorBuilder: (_, __) => const SizedBox(width: 12),
-//           itemBuilder: (context, index) {
-//             if (index < menuData.length) {
-//               return MenuCard(
-//                 menu: menuData[index],
-//                 onTap: () {
-//                   Navigator.push(
-//                     context,
-//                     MaterialPageRoute(
-//                       builder: (context) => const DetailPage(),
-//                     ),
-//                   );
-//                 },
-//               );
-//             } else {
-//               return goCard(() {
-//                 // ไปยังหน้าเมนูทั้งหมด
-//               });
-//             }
-//           },
-//         ),
-//       );
-//     }
-//   },
-// )
-
-//             SizedBox(height: 24),
-//             Padding(
-//               padding: const EdgeInsets.symmetric(horizontal: 16),
-//               child: Text(
-//                 'วัตถุดิบของฉัน',
-//                 style: TextStyle(
-//                   fontSize: 22,
-//                   fontWeight: FontWeight.w800,
-//                   fontFamily: 'NotoSansThai',
-//                 ),
-//               ),
-//             ),
-//             const SizedBox(height: 17),
-
-//             SizedBox(
-//               height: 128,
-//               child: ListView.builder(
-//                 scrollDirection: Axis.horizontal,
-//                 padding: const EdgeInsets.only(left: 16),
-//                 itemCount: ingredients.length + 1,
-//                 itemBuilder: (context, index) {
-//                   if (index < ingredients.length) {
-//                     return IngredientCard(
-//                       ingredient: ingredients[index],
-//                       onDelete: () {
-//                         // ลบวัตถุดิบ
-//                       },
-//                     );
-//                   } else {
-//                     return goCard(() {
-//                       // ไปยังหน้าวัตถุดิบทั้งหมด
-//                     });
-//                   }
-//                 },
-//               ),
-//             ),
-
-//             // ฟังก์ชันสำหรับแสดงเมนูโปรดและเมนูแนะนำยังคงเหมือนเดิม
-//             // ... (สามารถใช้ code แบบเดียวกับที่ใช้ดึงเมนูมาจากฐานข้อมูลในส่วนที่เหลือ)
-//           ],
-//         ),
-//       ),
-//     );
-//   }
-// }
-
+import 'package:cookmate/models/favorite_menu_model.dart';
 import 'package:flutter/material.dart';
 import '../models/menu_from_ingredients_model.dart';
 import '../models/ingredient_model.dart';
-import '../widgets/menu_card.dart';
+import '../widgets/menu_card.dart'; // ใช้ MenuCard สำหรับเมนูจากวัตถุดิบ
+import '../widgets/menu_item_card.dart'; // ใช้ MenuItemCard สำหรับเมนูโปรดและเมนูแนะนำ
 import '../widgets/ingredient_card.dart';
-import '../widgets/menu_item_card.dart';
 import '../pages/detail_page.dart';
+import '../pages/search_page.dart';
+import '../pages/ingredients/myingredients_page.dart';
+import '../pages/fav_page.dart';
 import '../widgets/bottom_navbar.dart';
 import '../widgets/home_appbar.dart';
-// import 'package:cookmate/DatabaseHelper.dart';
 import 'package:cookmate/DatabaseHelperTest.dart';
-
-
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
@@ -469,32 +21,107 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
+  late Stream<List<Map<String, String>>> _favoriteRecipesStream;
   late Future<List<Map<String, String>>> _recipesFuture;
   late Future<List<Map<String, dynamic>>> _ingredientsFuture;
+  late List<Map<String, String>> _randomMenus = [];
 
   @override
   void initState() {
     super.initState();
+    _favoriteRecipesStream =
+        DatabaseHelperTest.fetchFavoriteRecipesStream(); // ใช้ Stream
     _refreshRecipes();
     _refreshIngredients();
+    _loadRandomMenus();
   }
 
+  // ฟังก์ชันรีเฟรชเมนูจากวัตถุดิบ
   void _refreshRecipes() {
     setState(() {
       _recipesFuture = DatabaseHelperTest.fetchFullyMatchedRecipes();
     });
   }
 
+  // ฟังก์ชันรีเฟรชวัตถุดิบของฉัน
   void _refreshIngredients() {
     setState(() {
       _ingredientsFuture = DatabaseHelperTest.fetchUserIngredientsOnly();
     });
   }
 
+  // ฟังก์ชันโหลดเมนูแนะนำครั้งแรก หรือเมื่อมีการเปลี่ยนหน้า
+  void _loadRandomMenus() async {
+    var randomMenus =
+        await DatabaseHelperTest.fetchRandomMenus(); // เรียกเมนูแนะนำแบบสุ่ม
+    setState(() {
+      _randomMenus = randomMenus; // เก็บข้อมูลเมนูแนะนำในตัวแปร
+    });
+  }
+
+  // ฟังก์ชันการกด/ไม่กดหัวใจ
+  void _toggleFavorite(String recipeId, bool isCurrentlyFavorited) async {
+    bool newFavoriteStatus = !isCurrentlyFavorited;
+
+    // อัปเดตสถานะโปรดในฐานข้อมูล
+    await DatabaseHelperTest.updateFavoriteStatus(
+      recipeId: recipeId,
+      isFavorite: newFavoriteStatus,
+    );
+
+    setState(() {
+      // อัพเดตสถานะโปรดในเมนูที่เกี่ยวข้องใน _randomMenus
+      for (var menu in _randomMenus) {
+        if (menu['recipe_id'] == recipeId) {
+          menu['fav_id'] =
+              newFavoriteStatus ? '1' : '0'; // เปลี่ยนแปลงสถานะโปรด
+        }
+      }
+    });
+  }
+
+  // ฟังก์ชันสร้าง MenuItemCard สำหรับเมนูโปรดและเมนูแนะนำ
+  Widget _buildMenuItemCard(Map<String, String> recipe) {
+    bool isFavorited = recipe['fav_id'] == '1';
+
+    return MenuItemCard(
+      imagePath: recipe['recipe_image'] ?? '',
+      name: recipe['recipe_name'] ?? '',
+      isFavorited: isFavorited,
+      onTap: () {
+        Navigator.push(
+          context,
+          MaterialPageRoute(builder: (_) => DetailPage(recipeId: recipe['recipe_id'] ?? ''),
+        ),);
+      },
+      onFavoriteToggle: () {
+        _toggleFavorite(recipe['recipe_id'] ?? '', isFavorited);
+      },
+    );
+  }
+
+  // ฟังก์ชันสร้าง MenuCard สำหรับเมนูจากวัตถุดิบ
+  Widget _buildMenuCard(Map<String, String> recipe) {
+    return MenuCard(
+      recipeId: recipe['recipe_id'] ?? '',
+      name: recipe['recipe_name'] ?? '',
+      imagePath: recipe['recipe_image'] ?? '',
+      isFavorited: recipe['fav_id'] == '1',
+      onTap: () {
+        Navigator.push(
+          context,
+          MaterialPageRoute(builder: (_) => DetailPage(recipeId: recipe['recipe_id'] ?? ''),
+        ),);
+      },
+    );
+  }
+
   void _confirmDeleteIngredient(String ingredientName) {
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
-        content: Text('คุณแน่ใจหรือไม่ว่าต้องการลบรายละเอียดของ "$ingredientName" ?'),
+        content: Text(
+          'คุณแน่ใจหรือไม่ว่าต้องการลบรายละเอียดของ "$ingredientName" ?',
+        ),
         action: SnackBarAction(
           label: 'ยืนยัน',
           textColor: Colors.red,
@@ -512,6 +139,7 @@ class _HomePageState extends State<HomePage> {
     );
   }
 
+  // ฟังก์ชันสร้างปุ่ม Go สำหรับไปหน้าเมนูทั้งหมด
   Widget goCard(VoidCallback onTap) {
     return GestureDetector(
       onTap: onTap,
@@ -539,7 +167,7 @@ class _HomePageState extends State<HomePage> {
     return Scaffold(
       backgroundColor: const Color(0xFFF9F9F9),
       appBar: HomeAppBar(title: 'COOKMATE'),
-      bottomNavigationBar: BottomNavBar(),
+      bottomNavigationBar: BottomNavBar(currentIndex: 0),
       body: SingleChildScrollView(
         padding: const EdgeInsets.only(top: 30),
         child: Column(
@@ -564,7 +192,7 @@ class _HomePageState extends State<HomePage> {
                   return const Center(child: CircularProgressIndicator());
                 }
                 if (snapshot.hasError) {
-                  return Center(child: Text('Error: \${snapshot.error}'));
+                  return Center(child: Text('Error: ${snapshot.error}'));
                 }
                 if (!snapshot.hasData || snapshot.data!.isEmpty) {
                   return const Center(
@@ -579,31 +207,30 @@ class _HomePageState extends State<HomePage> {
                   child: ListView.builder(
                     scrollDirection: Axis.horizontal,
                     padding: const EdgeInsets.symmetric(horizontal: 16),
-                    itemCount: recipes.length > 4 ? 5 : recipes.length + 1,
+                    itemCount:
+                        recipes.length > 4
+                            ? 5
+                            : recipes.length + 1, // เพิ่ม 1 สำหรับปุ่ม Go
                     itemBuilder: (context, index) {
                       if (index < (recipes.length > 4 ? 4 : recipes.length)) {
                         var recipe = recipes[index];
                         return Container(
                           margin: const EdgeInsets.only(right: 12),
-                          child: MenuCard(
-                            recipeId: recipe['recipe_id'] ?? '',
-                            name: recipe['recipe_name'] ?? '',
-                            imagePath: recipe['recipe_image'] ?? '',
-                            isFavorited: recipe['fav_id'] == '1',
-                            onTap: () {
-                              Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                  builder: (_) => const DetailPage(),
-                                ),
-                              );
-                            },
-                            onToggleFavorite: _refreshRecipes,
-                          ),
+                          child: _buildMenuCard(
+                            recipe,
+                          ), // ใช้ MenuCard สำหรับเมนูจากวัตถุดิบ
                         );
                       } else {
                         return goCard(() {
-                          // ไปยังหน้าเมนูทั้งหมด
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder:
+                                  (_) => const SearchPage(
+                                    initialFilter: FilterMode.byIngredients,
+                                  ),
+                            ),
+                          );
                         });
                       }
                     },
@@ -647,9 +274,15 @@ class _HomePageState extends State<HomePage> {
                     scrollDirection: Axis.horizontal,
                     padding: const EdgeInsets.only(left: 16),
                     itemCount:
-                        ingredientData.length > 4 ? 5 : ingredientData.length + 1,
+                        ingredientData.length > 4
+                            ? 5
+                            : ingredientData.length +
+                                1, // เพิ่ม 1 สำหรับปุ่ม Go
                     itemBuilder: (context, index) {
-                      if (index < (ingredientData.length > 4 ? 4 : ingredientData.length)) {
+                      if (index <
+                          (ingredientData.length > 4
+                              ? 4
+                              : ingredientData.length)) {
                         final item = ingredientData[index];
                         return IngredientCard(
                           ingredient: IngredientModel(
@@ -657,22 +290,149 @@ class _HomePageState extends State<HomePage> {
                             ingredientId: 0,
                             name: item['ingredient_name'],
                             imagePath: item['Categories_image'],
-                            expDate: item['exp_date'] != null
-                                ? DateTime.tryParse(item['exp_date']) ?? DateTime.now()
-                                : DateTime.now(),
-
+                            expDate:
+                                item['exp_date'] != null
+                                    ? DateTime.tryParse(item['exp_date']) ??
+                                        DateTime.now()
+                                    : DateTime.now(),
                           ),
-                          onDelete: () => _confirmDeleteIngredient(item['ingredient_name']),
+                          onDelete:
+                              () => _confirmDeleteIngredient(
+                                item['ingredient_name'],
+                              ),
+                          onUpdate: () {
+                            _refreshIngredients();
+                            _refreshRecipes(); // ✅ เพิ่มโหลดเมนูใหม่ด้วย
+                          },
                         );
                       } else {
                         return goCard(() {
-                          // ไปยังหน้าวัตถุดิบทั้งหมด
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (_) => const MyIngredientsPage(),
+                            ),
+                          );
                         });
                       }
                     },
                   ),
                 );
               },
+            ),
+
+            const SizedBox(height: 24),
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 16),
+              child: Text(
+                'เมนูโปรด',
+                style: TextStyle(
+                  fontSize: 22,
+                  fontWeight: FontWeight.w800,
+                  fontFamily: 'NotoSansThai',
+                ),
+              ),
+            ),
+            const SizedBox(height: 17),
+            StreamBuilder<List<Map<String, String>>>(
+              stream: _favoriteRecipesStream,
+              builder: (context, snapshot) {
+                if (snapshot.connectionState == ConnectionState.waiting) {
+                  return const Center(child: CircularProgressIndicator());
+                }
+                if (snapshot.hasError) {
+                  return Center(child: Text('Error: ${snapshot.error}'));
+                }
+                if (!snapshot.hasData || snapshot.data!.isEmpty) {
+                  return const Center(child: Text('ไม่มีเมนูโปรด'));
+                }
+
+                var favoriteRecipes = snapshot.data!;
+
+                return SizedBox(
+                  height: 130,
+                  child: ListView.builder(
+                    scrollDirection: Axis.horizontal,
+                    padding: const EdgeInsets.only(left: 16),
+                    itemCount:
+                        favoriteRecipes.length > 4
+                            ? 5
+                            : favoriteRecipes.length + 1,
+                    itemBuilder: (context, index) {
+                      if (index <
+                          (favoriteRecipes.length > 4
+                              ? 4
+                              : favoriteRecipes.length)) {
+                        var recipe = favoriteRecipes[index];
+                        return Container(
+                          margin: const EdgeInsets.only(right: 12),
+                          child: _buildMenuItemCard(
+                            recipe,
+                          ), // ใช้ MenuItemCard สำหรับเมนูโปรด
+                        );
+                      } else {
+                        return goCard(() {
+                          Navigator.push(
+          context,
+          MaterialPageRoute(builder: (_) =>  FavPage()),
+        );
+                        });
+                      }
+                    },
+                  ),
+                );
+              },
+            ),
+
+            const SizedBox(height: 24),
+            Padding(
+              padding: const EdgeInsets.only(left: 16, right: 8),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  const Text(
+                    'เมนูแนะนำ',
+                    style: TextStyle(
+                      fontSize: 22,
+                      fontWeight: FontWeight.w800,
+                      fontFamily: 'NotoSansThai',
+                    ),
+                  ),
+                ],
+              ),
+            ),
+            const SizedBox(height: 17),
+            SizedBox(
+              height: 130,
+              child: ListView.builder(
+                scrollDirection: Axis.horizontal,
+                padding: const EdgeInsets.only(left: 16),
+                itemCount:
+                    _randomMenus.length > 4 ? 5 : _randomMenus.length + 1,
+                // แสดงสูงสุด 4 การ์ด + 1 ปุ่ม "Go"
+                itemBuilder: (context, index) {
+                  if (index <
+                      (_randomMenus.length > 4 ? 4 : _randomMenus.length)) {
+                    var recipe = _randomMenus[index];
+                    return Container(
+                      margin: const EdgeInsets.only(right: 12),
+                      child: _buildMenuItemCard(
+                        recipe,
+                      ), // ใช้ MenuItemCard สำหรับเมนูแนะนำ
+                    );
+                  } else {
+                    return goCard(() {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder:
+                              (_) => SearchPage(recommendedMenus: _randomMenus),
+                        ),
+                      );
+                    });
+                  }
+                },
+              ),
             ),
           ],
         ),

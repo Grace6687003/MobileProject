@@ -153,7 +153,7 @@ class CategoriesPage extends StatelessWidget {
         data: Theme.of(context).copyWith(
           canvasColor: Color(0xFF2A2C41), // เพิ่มสีพื้นหลังของ BottomNavBar
         ),
-        child: BottomNavBar(),
+        child: BottomNavBar(currentIndex: -1),
       ),
       body: Container(
         color: Colors.white, // Set the background color to white

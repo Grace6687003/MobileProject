@@ -176,4 +176,125 @@ class DatabaseHelperTest {
 
     await conn.close();
   }
+
+  // ฟังก์ชัน _fetchFavoriteMenus()
+  static Stream<List<Map<String, String>>> fetchFavoriteRecipesStream() async* {
+    final conn = await _connectToDatabase();
+
+    while (true) {
+      var results = await conn.execute('''
+      SELECT recipe_id, recipe_name, recipe_image, fav_id
+      FROM Recipes
+      WHERE fav_id = 1
+      ''');
+
+      List<Map<String, String>> favoriteRecipes =
+          results.rows
+              .map((row) => row.assoc().map((k, v) => MapEntry(k, v ?? '')))
+              .toList();
+
+      yield favoriteRecipes; // ส่งข้อมูลให้ Stream
+      await Future.delayed(
+        Duration(seconds: 5),
+      ); // หน่วงเวลา 5 วินาที แล้วดึงข้อมูลใหม่
+    }
+  }
+
+  static Future<List<Map<String, String>>> fetchRandomMenus() async {
+    final conn = await _connectToDatabase();
+    var results = await conn.execute('''
+    SELECT recipe_id, recipe_name, recipe_image, fav_id
+FROM Recipes
+WHERE recipe_id IS NOT NULL
+ORDER BY RAND()
+LIMIT 4;
+
+  ''');
+
+    List<Map<String, String>> randomMenus =
+        results.rows
+            .map((row) => row.assoc().map((k, v) => MapEntry(k, v ?? '')))
+            .toList();
+
+    await conn.close();
+
+    // ตรวจสอบผลลัพธ์ที่ดึงมา
+    print("เมนูแนะนำที่ดึงมา: $randomMenus");
+
+    return randomMenus;
+  }
+
+  static Future<List<Map<String, String>>> fetchAllMenus() async {
+    final conn = await _connectToDatabase();
+    final results = await conn.execute('''
+    SELECT recipe_id, recipe_name, recipe_image, fav_id
+    FROM Recipes
+  ''');
+
+    List<Map<String, String>> menus =
+        results.rows
+            .map((row) => row.assoc().map((k, v) => MapEntry(k, v ?? '')))
+            .toList();
+
+    await conn.close();
+    return menus;
+  }
+
+  static Future<List<Map<String, String>>> searchRecipesByNameOrIngredient(
+    String query,
+  ) async {
+    final conn = await _connectToDatabase();
+
+    var results = await conn.execute(
+      '''
+    SELECT DISTINCT r.recipe_id, r.recipe_name, r.recipe_image, r.fav_id
+    FROM Recipes r
+    LEFT JOIN Recipes_Ingredients ri ON r.recipe_id = ri.recipe_id
+    LEFT JOIN Ingredient i ON ri.ingredient_id = i.ingredient_id
+    WHERE r.recipe_name LIKE :query OR i.ingredient_name LIKE :query
+  ''',
+      {"query": "%$query%"},
+    );
+
+    return results.rows
+        .map((row) => row.assoc().map((k, v) => MapEntry(k, v ?? '')))
+        .toList();
+  }
+
+  static Future<Map<String, dynamic>> getRecipeDetail(String recipeId) async {
+  final conn = await _connectToDatabase();
+
+  // ✅ ดึงข้อมูลเมนูพร้อม fav_id
+  final recipeResult = await conn.execute('''
+    SELECT recipe_id, recipe_name, instruction, recipe_image, fav_id
+    FROM Recipes
+    WHERE recipe_id = :id
+  ''', {"id": recipeId});
+
+  if (recipeResult.rows.isEmpty) return {};
+
+  final recipe = recipeResult.rows.first.assoc();
+
+  // ✅ ดึงวัตถุดิบพร้อม is_required
+  final ingredientsResult = await conn.execute('''
+    SELECT i.ingredient_name, ri.is_required
+    FROM Recipes_Ingredients ri
+    JOIN Ingredient i ON ri.ingredient_id = i.ingredient_id
+    WHERE ri.recipe_id = :id
+  ''', {"id": recipeId});
+
+  final ingredients = ingredientsResult.rows
+      .map((row) => row.assoc().map((k, v) => MapEntry(k, v ?? '')))
+      .toList();
+
+  return {
+    "recipe_id": recipe["recipe_id"],
+    "recipe_name": recipe["recipe_name"],
+    "instruction": recipe["instruction"],
+    "recipe_image": recipe["recipe_image"],
+    "fav_id": recipe["fav_id"], // ✅ ได้ค่าจริงแล้วจากฐานข้อมูล
+    "ingredients": ingredients,
+  };
+}
+
 }

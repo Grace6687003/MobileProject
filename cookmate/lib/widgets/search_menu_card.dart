@@ -1,25 +1,30 @@
 import 'package:flutter/material.dart';
-import '../pages/detail_page.dart'; // ✅ เพิ่ม import
+import '../pages/detail_page.dart';
 
 class SearchMenuCard extends StatelessWidget {
+  final String recipeId;
   final String menuName;
   final String imagePath;
+  final bool isFavorited;
+  final VoidCallback? onFavoriteToggle;
 
   const SearchMenuCard({
     super.key,
+    required this.recipeId,
     required this.menuName,
     required this.imagePath,
+    this.isFavorited = false,
+    this.onFavoriteToggle,
   });
 
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
       onTap: () {
-        // ✅ ไปหน้า DetailPage เมื่อคลิกการ์ด
         Navigator.push(
           context,
           MaterialPageRoute(
-            builder: (context) => const DetailPage(),
+            builder: (context) => DetailPage(recipeId: recipeId), // ✅ ส่ง recipeId ไป
           ),
         );
       },
@@ -41,7 +46,6 @@ class SearchMenuCard extends StatelessWidget {
           padding: const EdgeInsets.all(10),
           child: Row(
             children: [
-              // รูปเมนู
               ClipRRect(
                 borderRadius: BorderRadius.circular(15),
                 child: Image.asset(
@@ -52,8 +56,6 @@ class SearchMenuCard extends StatelessWidget {
                 ),
               ),
               const SizedBox(width: 16),
-
-              // ชื่อเมนู
               Expanded(
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
@@ -70,19 +72,17 @@ class SearchMenuCard extends StatelessWidget {
                   ],
                 ),
               ),
-
-              // ปุ่มหัวใจ
               Padding(
                 padding: const EdgeInsets.only(top: 48),
                 child: IconButton(
                   icon: Image.asset(
-                    'assets/images/icon/heart.png',
+                    isFavorited
+                        ? 'assets/images/icon/heart_sl.png'
+                        : 'assets/images/icon/heart.png',
                     width: 24,
                     height: 24,
                   ),
-                  onPressed: () {
-                    // TODO: handle favorite toggle
-                  },
+                  onPressed: onFavoriteToggle,
                 ),
               ),
             ],

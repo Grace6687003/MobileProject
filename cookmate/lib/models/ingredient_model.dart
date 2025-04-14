@@ -3,54 +3,58 @@ class IngredientModel {
   final int ingredientId;
   final String name;
   final String imagePath;
-  final DateTime expDate;
+  final DateTime? expDate;
+  final String? description;
 
   IngredientModel({
     required this.id,
     required this.ingredientId,
     required this.name,
     required this.imagePath,
-    required this.expDate,
+    this.expDate,
+    this.description,
   });
 
   String get status {
-  // เอาแค่วันที่ปัจจุบัน โดยไม่สนใจเวลา
-  final now = DateTime.now().toLocal(); // รับเวลาปัจจุบัน
-  final currentDate = DateTime(now.year, now.month, now.day); // เอาแค่วัน-เดือน-ปี
+    if (expDate == null) return '';
+    final now = DateTime.now().toLocal();
+    final currentDate = DateTime(now.year, now.month, now.day);
+    final diff = expDate!.difference(currentDate).inDays;
 
-  final diff = expDate.difference(currentDate).inDays; // คำนวณจำนวนวัน
+    if (diff < 0) return 'หมดอายุแล้ว!';
+    if (diff == 0) return 'จะหมดอายุวันนี้';
+    if (diff == 1) return 'เหลืออีก 1 วัน';
+    if (diff == 2) return 'เหลืออีก 2 วัน';
+    return '';
+  }
 
-  if (diff < 0) return 'หมดอายุแล้ว!';
-  if (diff == 0) return 'จะหมดอายุวันนี้';
-  if (diff == 2) return 'เหลืออีก 2 วัน';
-  if (diff == 1) return 'เหลืออีก 1 วัน';
-  return '';
-}
+  bool get isExpired {
+    if (expDate == null) return false;
+    final today = DateTime.now().copyWith(hour: 0, minute: 0, second: 0, millisecond: 0);
+    return expDate!.isBefore(today);
+  }
 
-
-  bool get isExpired => expDate.isBefore(
-    DateTime.now().copyWith(hour: 0, minute: 0, second: 0, millisecond: 0),
-  );
-
-  // เพิ่มฟังก์ชันเพื่อแปลงจาก Map (จะใช้เชื่อมกับ SQLite หรือ CSV ต่อไป)
   factory IngredientModel.fromMap(Map<String, dynamic> map) {
     return IngredientModel(
       id: map['my_ingredient_id'],
       ingredientId: map['ingredient_id'],
-      name: map['name'],
-      imagePath: map['imagePath'],
-      expDate: DateTime.parse(map['exp_date']),
+      name: map['ingredient_name'] ?? map['name'], // รองรับทั้งชื่อแบบใหม่และเดิม
+      imagePath: map['Categories_image'] ?? map['imagePath'] ?? 'assets/images/default.png',
+      expDate: map['exp_date'] != null && map['exp_date'].toString().isNotEmpty
+          ? DateTime.tryParse(map['exp_date'])
+          : null,
+      description: map['description'],
     );
   }
 
-  // ฟังก์ชันนี้ใช้เพื่อแปลงข้อมูลจากโมเดลกลับเป็น Map (เพื่อใช้งานในฐานข้อมูลหรือ CSV)
   Map<String, dynamic> toMap() {
     return {
       'my_ingredient_id': id,
       'ingredient_id': ingredientId,
-      'name': name,
-      'imagePath': imagePath,
-      'exp_date': expDate.toIso8601String(),
+      'ingredient_name': name,
+      'Categories_image': imagePath,
+      'exp_date': expDate?.toIso8601String(),
+      'description': description,
     };
   }
 }

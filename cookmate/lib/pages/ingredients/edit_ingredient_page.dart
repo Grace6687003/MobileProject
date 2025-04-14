@@ -155,7 +155,7 @@ class _EditIngredientPageState extends State<EditIngredientPage> {
       ),
       bottomNavigationBar: Theme(
         data: Theme.of(context).copyWith(canvasColor: Color(0xFF2A2C41)),
-        child: BottomNavBar(),
+        child: BottomNavBar(currentIndex: -1),
       ),
       body: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 8),
