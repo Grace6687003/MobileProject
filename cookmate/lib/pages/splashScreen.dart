@@ -27,11 +27,11 @@ Widget build(BuildContext context) {
   return Scaffold(
     backgroundColor: Colors.white,
     body: Align(
-      alignment: const Alignment(0, -0.4), // 👈 ขยับขึ้น (-1 คือบนสุด, 0 คือกลาง)
+      alignment: const Alignment(0, 0), // 👈 ขยับขึ้น (-1 คือบนสุด, 0 คือกลาง)
       child: Image.asset(
         'assets/images/ui/cookmate_logo.png',
-        width: 550,
-        height: 550,
+        width: 300,
+        height: 300,
         fit: BoxFit.contain,
       ),
     ),
