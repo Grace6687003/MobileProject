@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:cookmate/DatabaseHelperTest.dart';
-import '/widgets/ingredient_appbar.dart';
+import '/widgets/myingredient_appbar';
 import '/widgets/bottom_navbar.dart';
 import '/pages/ingredients/categories_page.dart';
 import '/pages/ingredients/edit_ingredient_page.dart';
@@ -70,14 +70,12 @@ class _MyIngredientsPageState extends State<MyIngredientsPage> {
   }
 
   @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: Colors.white,
-      appBar: CustomAppBar(
-        title: 'Ingredients',
-        goHomeInsteadOfPop:
-            true, // ← ใส่ให้เพื่อให้ปุ่ม back กลับไปหน้า Home เสมอ
-      ),
+Widget build(BuildContext context) {
+  return Scaffold(
+    backgroundColor: Colors.white,
+    appBar: CustomAppBar(
+      title: "Ingredients",
+    ),
       bottomNavigationBar: Theme(
         data: Theme.of(context).copyWith(canvasColor: Color(0xFF2A2C41)),
         child: BottomNavBar(currentIndex: 2),

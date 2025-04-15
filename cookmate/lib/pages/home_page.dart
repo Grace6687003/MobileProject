@@ -12,6 +12,7 @@ import '../pages/fav_page.dart';
 import '../widgets/bottom_navbar.dart';
 import '../widgets/home_appbar.dart';
 import 'package:cookmate/DatabaseHelperTest.dart';
+import '../pages/stores_page.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
@@ -91,8 +92,10 @@ class _HomePageState extends State<HomePage> {
       onTap: () {
         Navigator.push(
           context,
-          MaterialPageRoute(builder: (_) => DetailPage(recipeId: recipe['recipe_id'] ?? ''),
-        ),);
+          MaterialPageRoute(
+            builder: (_) => DetailPage(recipeId: recipe['recipe_id'] ?? ''),
+          ),
+        );
       },
       onFavoriteToggle: () {
         _toggleFavorite(recipe['recipe_id'] ?? '', isFavorited);
@@ -110,8 +113,10 @@ class _HomePageState extends State<HomePage> {
       onTap: () {
         Navigator.push(
           context,
-          MaterialPageRoute(builder: (_) => DetailPage(recipeId: recipe['recipe_id'] ?? ''),
-        ),);
+          MaterialPageRoute(
+            builder: (_) => DetailPage(recipeId: recipe['recipe_id'] ?? ''),
+          ),
+        );
       },
     );
   }
@@ -373,9 +378,9 @@ class _HomePageState extends State<HomePage> {
                       } else {
                         return goCard(() {
                           Navigator.push(
-          context,
-          MaterialPageRoute(builder: (_) =>  FavPage()),
-        );
+                            context,
+                            MaterialPageRoute(builder: (_) => FavPage()),
+                          );
                         });
                       }
                     },
@@ -432,6 +437,50 @@ class _HomePageState extends State<HomePage> {
                     });
                   }
                 },
+              ),
+            ),
+            const SizedBox(height: 24),
+            Center(
+              child: GestureDetector(
+                onTap: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(builder: (_) => const NearbyStoresPage()),
+                  );
+                },
+                child: Column(
+                  children: [
+                    Text(
+                      'ร้านค้าใกล้ฉัน',
+                      style: TextStyle(
+                        fontSize: 20,
+                        fontWeight: FontWeight.w700,
+                        fontFamily: 'NotoSansThai',
+                      ),
+                    ),
+                    const SizedBox(height: 10),
+                    Container(
+                      width: 80,
+                      height: 80,
+                      decoration: BoxDecoration(
+                        color: Colors.orange.shade100,
+                        shape: BoxShape.circle,
+                        boxShadow: [
+                          BoxShadow(
+                            color: Colors.orange.withOpacity(0.3),
+                            blurRadius: 10,
+                            offset: Offset(0, 4),
+                          ),
+                        ],
+                      ),
+                      child: Icon(
+                        Icons.storefront,
+                        size: 40,
+                        color: Colors.orange,
+                      ),
+                    ),
+                  ],
+                ),
               ),
             ),
           ],

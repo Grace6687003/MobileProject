@@ -3,6 +3,7 @@ import '/widgets/bottom_navbar.dart';
 import '/widgets/fav_appbar.dart';
 import '/widgets/fav_card.dart';
 import 'package:cookmate/DatabaseHelperTest.dart';
+import 'package:cookmate/pages/detail_page.dart'; // ✅ เพิ่มตรงนี้
 
 class FavPage extends StatefulWidget {
   const FavPage({super.key});
@@ -60,16 +61,20 @@ class _FavPageState extends State<FavPage> {
                         title: item['recipe_name'] ?? 'ไม่มีชื่อเมนู',
                         isFavorited: isFavorited,
                         onTap: () {
-                          // TODO: เปิดหน้า DetailPage
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) => DetailPage(
+                                recipeId: item['recipe_id']!,
+                              ),
+                            ),
+                          );
                         },
                         onFavoriteToggle: () async {
-                          // ✅ อัปเดตสถานะใน DB
                           await DatabaseHelperTest.updateFavoriteStatus(
                             recipeId: item['recipe_id']!,
                             isFavorite: !isFavorited,
                           );
-
-                          // ✅ ถ้าใช้ StreamBuilder แล้ว ไม่ต้อง setState
                         },
                       );
                     },
