@@ -3,9 +3,9 @@ import 'package:flutter/material.dart';
 class MenuItemCard extends StatelessWidget {
   final String imagePath;
   final String name;
-  final bool isFavorited; // ตรวจสอบว่าเป็นเมนูโปรด
+  final bool isFavorited; 
   final VoidCallback onTap;
-  final VoidCallback onFavoriteToggle; // เพิ่มฟังก์ชันสำหรับกด/ไม่กดใจ
+  final VoidCallback onFavoriteToggle; 
 
   const MenuItemCard({
     super.key,
@@ -13,7 +13,7 @@ class MenuItemCard extends StatelessWidget {
     required this.name,
     this.isFavorited = false,
     required this.onTap,
-    required this.onFavoriteToggle, // รับฟังก์ชันใหม่
+    required this.onFavoriteToggle, 
   });
 
   @override
@@ -87,11 +87,11 @@ class MenuItemCard extends StatelessWidget {
               child: Padding(
                 padding: const EdgeInsets.only(bottom: 8, right: 8),
                 child: GestureDetector(
-                  onTap: onFavoriteToggle, // เรียกฟังก์ชันเมื่อกดไอคอน
+                  onTap: onFavoriteToggle, 
                   child: Image.asset(
                     isFavorited
-                        ? 'assets/images/icon/heart_sl.png' // ใช้ภาพหัวใจที่ถูกเลือก
-                        : 'assets/images/icon/heart.png', // ใช้ภาพหัวใจที่ไม่ได้เลือก
+                        ? 'assets/images/icon/heart_sl.png' 
+                        : 'assets/images/icon/heart.png', 
                     width: 22,
                     height: 22,
                   ),

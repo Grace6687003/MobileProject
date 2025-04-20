@@ -15,7 +15,7 @@ class MyIngredientsPage extends StatefulWidget {
 class _MyIngredientsPageState extends State<MyIngredientsPage> {
   List<Map<String, dynamic>> userIngredients = [];
   List<Map<String, dynamic>> expiredIngredients = [];
-  int? _selectedIngredientIndex; // ต้องใส่ไว้ใน State ด้านบนสุดของ class
+  int? _selectedIngredientIndex; 
 
   @override
   void initState() {

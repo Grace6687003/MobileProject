@@ -25,7 +25,7 @@ class _NearbyStoresPageState extends State<NearbyStoresPage> {
     try {
       final response = await http.get(
         Uri.parse(
-          'http://172.20.10.6:5000/api/nearby-stores',
+          'http://169.254.108.42:5000//api/nearby-stores',
         ), // ใส่ IP Flask ที่รันอยู่
       );
       if (response.statusCode == 200) {
@@ -154,7 +154,7 @@ class _NearbyStoresPageState extends State<NearbyStoresPage> {
               MarkerLayer(markers: _markers),
             ],
           ),
-          // ✅ ปุ่ม Zoom In / Out ด้านล่างขวา
+
           Positioned(
             bottom: 20,
             right: 16,

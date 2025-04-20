@@ -24,8 +24,10 @@ class DatabaseHelperTest {
   static Future<List<Map<String, String>>> fetchFullyMatchedRecipes() async {
     final conn = await _connectToDatabase();
     var results = await conn.execute('''
-  SELECT r.recipe_id, r.recipe_name, r.recipe_image, r.fav_id
+  SELECT r.recipe_id, r.recipe_name, r.recipe_image, r.fav_id, GROUP_CONCAT(i.ingredient_name) AS ingredients
   FROM Recipes r
+  LEFT JOIN Recipes_Ingredients ri ON r.recipe_id = ri.recipe_id
+  LEFT JOIN Ingredient i ON ri.ingredient_id = i.ingredient_id
   WHERE r.recipe_id IN (
     SELECT ri.recipe_id
     FROM Recipes_Ingredients ri
@@ -40,7 +42,8 @@ class DatabaseHelperTest {
         AND ri2.recipe_id = ri.recipe_id
     )
   )
-''');
+  GROUP BY r.recipe_id;
+  ''');
 
     List<Map<String, String>> recipes =
         results.rows
@@ -227,8 +230,11 @@ LIMIT 4;
   static Future<List<Map<String, String>>> fetchAllMenus() async {
     final conn = await _connectToDatabase();
     final results = await conn.execute('''
-    SELECT recipe_id, recipe_name, recipe_image, fav_id
-    FROM Recipes
+  SELECT r.recipe_id, r.recipe_name, r.recipe_image, r.fav_id, GROUP_CONCAT(i.ingredient_name) AS ingredients
+  FROM Recipes r
+  LEFT JOIN Recipes_Ingredients ri ON r.recipe_id = ri.recipe_id
+  LEFT JOIN Ingredient i ON ri.ingredient_id = i.ingredient_id
+  GROUP BY r.recipe_id;
   ''');
 
     List<Map<String, String>> menus =
@@ -245,15 +251,18 @@ LIMIT 4;
   ) async {
     final conn = await _connectToDatabase();
 
-    var results = await conn.execute(
+    final loweredQuery = "%${query.toLowerCase()}%";
+
+    final results = await conn.execute(
       '''
     SELECT DISTINCT r.recipe_id, r.recipe_name, r.recipe_image, r.fav_id
     FROM Recipes r
-    LEFT JOIN Recipes_Ingredients ri ON r.recipe_id = ri.recipe_id
-    LEFT JOIN Ingredient i ON ri.ingredient_id = i.ingredient_id
-    WHERE r.recipe_name LIKE :query OR i.ingredient_name LIKE :query
-  ''',
-      {"query": "%$query%"},
+    JOIN Recipes_Ingredients ri ON r.recipe_id = ri.recipe_id
+    JOIN Ingredient i ON ri.ingredient_id = i.ingredient_id
+    WHERE LOWER(r.recipe_name) LIKE :query
+       OR LOWER(i.ingredient_name) LIKE :query
+    ''',
+      {"query": loweredQuery},
     );
 
     return results.rows
@@ -262,39 +271,45 @@ LIMIT 4;
   }
 
   static Future<Map<String, dynamic>> getRecipeDetail(String recipeId) async {
-  final conn = await _connectToDatabase();
+    final conn = await _connectToDatabase();
 
-  // ✅ ดึงข้อมูลเมนูพร้อม fav_id
-  final recipeResult = await conn.execute('''
+    // ดึงข้อมูลเมนูพร้อม fav_id
+    final recipeResult = await conn.execute(
+      '''
     SELECT recipe_id, recipe_name, instruction, recipe_image, fav_id
     FROM Recipes
     WHERE recipe_id = :id
-  ''', {"id": recipeId});
+  ''',
+      {"id": recipeId},
+    );
 
-  if (recipeResult.rows.isEmpty) return {};
+    if (recipeResult.rows.isEmpty) return {};
 
-  final recipe = recipeResult.rows.first.assoc();
+    final recipe = recipeResult.rows.first.assoc();
 
-  // ✅ ดึงวัตถุดิบพร้อม is_required
-  final ingredientsResult = await conn.execute('''
+    // ดึงวัตถุดิบพร้อม is_required
+    final ingredientsResult = await conn.execute(
+      '''
     SELECT i.ingredient_name, ri.is_required
     FROM Recipes_Ingredients ri
     JOIN Ingredient i ON ri.ingredient_id = i.ingredient_id
     WHERE ri.recipe_id = :id
-  ''', {"id": recipeId});
+  ''',
+      {"id": recipeId},
+    );
 
-  final ingredients = ingredientsResult.rows
-      .map((row) => row.assoc().map((k, v) => MapEntry(k, v ?? '')))
-      .toList();
+    final ingredients =
+        ingredientsResult.rows
+            .map((row) => row.assoc().map((k, v) => MapEntry(k, v ?? '')))
+            .toList();
 
-  return {
-    "recipe_id": recipe["recipe_id"],
-    "recipe_name": recipe["recipe_name"],
-    "instruction": recipe["instruction"],
-    "recipe_image": recipe["recipe_image"],
-    "fav_id": recipe["fav_id"], // ✅ ได้ค่าจริงแล้วจากฐานข้อมูล
-    "ingredients": ingredients,
-  };
-}
-
+    return {
+      "recipe_id": recipe["recipe_id"],
+      "recipe_name": recipe["recipe_name"],
+      "instruction": recipe["instruction"],
+      "recipe_image": recipe["recipe_image"],
+      "fav_id": recipe["fav_id"], // ได้ค่าจริงแล้วจากฐานข้อมูล
+      "ingredients": ingredients,
+    };
+  }
 }

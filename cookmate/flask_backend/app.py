@@ -3,7 +3,7 @@ from flask_cors import CORS
 import socket
 
 app = Flask(__name__)
-CORS(app)  # อนุญาตให้ frontend เรียก API ได้
+CORS(app) 
 
 @app.route('/api/nearby-stores', methods=['GET'])
 

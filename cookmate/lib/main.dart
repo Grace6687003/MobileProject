@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'pages/home_page.dart';
 import 'pages/splashScreen.dart'; 
-import 'DatabaseHelper.dart';
 import 'DatabaseHelperTest.dart';
 
 void main() {

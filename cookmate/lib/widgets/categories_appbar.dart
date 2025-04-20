@@ -4,12 +4,12 @@ import 'package:flutter/material.dart';
 class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
   final String title;
   final bool showBackButton;
-  final bool goHomeInsteadOfPop; // <== เพิ่มตรงนี้
+  final bool goHomeInsteadOfPop; 
 
   CustomAppBar({
     required this.title,
     this.showBackButton = true,
-    this.goHomeInsteadOfPop = false, // <== เพิ่ม default
+    this.goHomeInsteadOfPop = false, 
   });
 
   @override

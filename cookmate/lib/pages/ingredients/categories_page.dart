@@ -14,12 +14,12 @@ class CategoriesPage extends StatelessWidget {
       appBar: CustomAppBar(title: 'Categories'),
       bottomNavigationBar: Theme(
         data: Theme.of(context).copyWith(
-          canvasColor: Color(0xFF2A2C41), // เพิ่มสีพื้นหลังของ BottomNavBar
+          canvasColor: Color(0xFF2A2C41), 
         ),
         child: BottomNavBar(currentIndex: -1),
       ),
       body: Container(
-        color: Colors.white, // Set the background color to white
+        color: Colors.white, 
         padding: const EdgeInsets.all(16.0),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
@@ -27,15 +27,15 @@ class CategoriesPage extends StatelessWidget {
             Text('หมวดหมู่ของวัตถุดิบ',
                 style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold)),
             SizedBox(height: 20),
-            // Container wrapping the GridView to add background color and margin
+       
             Container(
-              padding: const EdgeInsets.only(left: 16.0, top: 50.0, bottom: 166), // Add padding around the blue container
+              padding: const EdgeInsets.only(left: 16.0, top: 50.0, bottom: 166), 
               decoration: BoxDecoration(
-                color: Color(0xFFE8F1F8), // Set background color to blue
-                borderRadius: BorderRadius.circular(20), // Optional: rounded corners
+                color: Color(0xFFE8F1F8), 
+                borderRadius: BorderRadius.circular(20), 
               ),
               child: GridView.count(
-                shrinkWrap: true, // Ensure that GridView doesn't try to expand
+                shrinkWrap: true, 
                 crossAxisCount: 3,
                 crossAxisSpacing: 20,
                 mainAxisSpacing: 10,
@@ -86,7 +86,7 @@ Widget _buildCategoryItem(String title, String imagePath, double width, double h
           ),
           child: ClipOval(
             child: Padding(
-              padding: const EdgeInsets.all(8.0), // เพิ่มระยะห่างจากขอบของวงกลม
+              padding: const EdgeInsets.all(8.0), 
               child: Image.asset(
                 imagePath,
                 fit: BoxFit.cover,

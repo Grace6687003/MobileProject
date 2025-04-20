@@ -10,7 +10,7 @@ class FavCard extends StatelessWidget {
 
   const FavCard({
     super.key,
-    required this.recipeId, // ✅ แก้ตรงนี้
+    required this.recipeId,
     required this.imagePath,
     required this.title,
     required this.isFavorited,
@@ -37,7 +37,6 @@ class FavCard extends StatelessWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
-            // รูปภาพเมนู
             Expanded(
               flex: 3,
               child: ClipRRect(
@@ -57,7 +56,7 @@ class FavCard extends StatelessWidget {
                 ),
               ),
             ),
-            // กล่องเขียว: ชื่อเมนู + หัวใจ
+
             Expanded(
               flex: 1,
               child: Container(
@@ -68,11 +67,13 @@ class FavCard extends StatelessWidget {
                     bottomRight: Radius.circular(16),
                   ),
                 ),
-                padding: const EdgeInsets.symmetric(horizontal: 8.0, vertical: 6.0),
+                padding: const EdgeInsets.symmetric(
+                  horizontal: 8.0,
+                  vertical: 6.0,
+                ),
                 child: Row(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    // ชื่อเมนู
                     Expanded(
                       child: Text(
                         title,
@@ -85,22 +86,22 @@ class FavCard extends StatelessWidget {
                       ),
                     ),
                     const SizedBox(width: 4),
-                    // รูปหัวใจ
+
                     GestureDetector(
                       onTap: onFavoriteToggle,
                       child: Padding(
-        padding: const EdgeInsets.only(top: 16.0, right: 4.0), // 👈 ขยับลง 4 px
-        child: Image.asset(
-          isFavorited
-              ? 'assets/images/icon/heart_sl.png'
-              : 'assets/images/icon/heart.png',
-          width: 20,
-          height: 20,
-        ),
-      ),
-    ),
-  ],
-),
+                        padding: const EdgeInsets.only(top: 16.0, right: 4.0),
+                        child: Image.asset(
+                          isFavorited
+                              ? 'assets/images/icon/heart_sl.png'
+                              : 'assets/images/icon/heart.png',
+                          width: 20,
+                          height: 20,
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
               ),
             ),
           ],

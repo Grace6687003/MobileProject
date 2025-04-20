@@ -61,7 +61,7 @@ class _EditIngredientPageState extends State<EditIngredientPage> {
         ingredientList = [ingredient['ingredient_name'] ?? ''];
         selectedIngredient = ingredient['ingredient_name'];
 
-        // ✅ เพิ่มการเซตค่าที่เหลือ
+
         _detailController.text = ingredient['description'] ?? '';
         _dateController.text = ingredient['exp_date'] ?? '';
         selectedDate = ingredient['exp_date'];

@@ -38,21 +38,7 @@ class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
                 children: [
                   Row(
                     children: [
-                      // if (showBackButton)
-                      //   IconButton(
-                      //     icon: Icon(Icons.arrow_back),
-                      //     onPressed: () {
-                      //       if (goHomeInsteadOfPop) {
-                      //         Navigator.pushNamedAndRemoveUntil(
-                      //           context,
-                      //           '/home',
-                      //           (route) => false,
-                      //         );
-                      //       } else {
-                      //         Navigator.pop(context);
-                      //       }
-                      //     },
-                      //   ),
+                      
                       SizedBox(width: 8),
                       Text(
                         title,

@@ -6,7 +6,7 @@ import 'package:cookmate/pages/ingredients/edit_ingredient_page.dart';
 class IngredientCard extends StatelessWidget {
   final IngredientModel ingredient;
   final VoidCallback onDelete;
-  final VoidCallback onUpdate; // ✅ โหลดข้อมูลใหม่ทุกครั้งหลังกลับจากแก้ไข
+  final VoidCallback onUpdate; 
 
   const IngredientCard({
     super.key,
@@ -32,7 +32,7 @@ class IngredientCard extends StatelessWidget {
             ),
           ),
         ).then((_) {
-          onUpdate(); // ✅ โหลดใหม่เสมอ ไม่สนว่าแก้หรือไม่
+          onUpdate(); 
         });
       },
       child: Container(
@@ -77,7 +77,7 @@ class IngredientCard extends StatelessWidget {
               ),
             ),
             const SizedBox(width: 14),
-            // ข้อมูลวัตถุดิบ
+     
             Expanded(
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
@@ -110,7 +110,7 @@ class IngredientCard extends StatelessWidget {
                 ],
               ),
             ),
-            // ปุ่มลบ
+  
             Align(
               alignment: Alignment.bottomCenter,
               child: IconButton(
@@ -118,7 +118,7 @@ class IngredientCard extends StatelessWidget {
                   await DatabaseHelperTest.clearIngredientDetails(
                     ingredientName: ingredient.name,
                   );
-                  onDelete(); // ✅ ลบแล้วรีโหลด
+                  onDelete(); 
                 },
                 icon: const Icon(Icons.delete, color: Colors.red),
                 iconSize: 34,

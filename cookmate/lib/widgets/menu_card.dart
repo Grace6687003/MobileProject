@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:cookmate/DatabaseHelperTest.dart';  // Import DatabaseHelperTest ที่ใช้ในการเชื่อมต่อฐานข้อมูล
+import 'package:cookmate/DatabaseHelperTest.dart';  
 
 class MenuCard extends StatefulWidget {
   final String recipeId;
@@ -99,23 +99,23 @@ class _MenuCardState extends State<MenuCard> {
                       alignment: Alignment.bottomRight,
                       child: GestureDetector(
                         onTap: () {
-                          if (isUpdating) return; // ป้องกันการกดซ้ำขณะอัปเดต
+                          if (isUpdating) return; 
                           final newFav = !isFav;
                           
-                          // รีเฟรช UI ทันที
+                       
                           setState(() {
                             isFav = newFav;
-                            isUpdating = true; // ตั้งสถานะกำลังอัปเดต
+                            isUpdating = true; 
                           });
 
-                          // อัปเดตฐานข้อมูลในพื้นหลัง
+                          
                           DatabaseHelperTest.updateFavoriteStatus(
                             recipeId: widget.recipeId,
                             isFavorite: newFav,
                           ).then((_) {
                             if (mounted) {
                               setState(() {
-                                isUpdating = false; // รีเซ็ตสถานะหลังจากการอัปเดตเสร็จ
+                                isUpdating = false; 
                               });
                             }
                           });

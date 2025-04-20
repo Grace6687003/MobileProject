@@ -113,7 +113,7 @@ Widget build(BuildContext context) {
           label: '',
         ),
       ],
-      currentIndex: safeIndex >= 0 ? safeIndex : 0, // ❗️ต้องส่งค่าที่ valid
+      currentIndex: safeIndex >= 0 ? safeIndex : 0, 
       selectedItemColor: Colors.white,
       unselectedItemColor: const Color(0xFF9195B7),
       backgroundColor: Colors.transparent,

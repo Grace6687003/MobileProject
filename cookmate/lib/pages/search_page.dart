@@ -9,11 +9,7 @@ class SearchPage extends StatefulWidget {
   final List<Map<String, String>>? recommendedMenus;
   final FilterMode? initialFilter; // ✅ เพิ่มรับ filter เริ่มต้น
 
-  const SearchPage({
-    super.key,
-    this.recommendedMenus,
-    this.initialFilter,
-  });
+  const SearchPage({super.key, this.recommendedMenus, this.initialFilter});
 
   @override
   _SearchPageState createState() => _SearchPageState();
@@ -45,7 +41,7 @@ class _SearchPageState extends State<SearchPage> {
       _ingredientMenus = byIngredients;
     });
 
-    _applySearch(_searchQuery); // ✅ เรียกหลังโหลดเมนู เพื่อ refresh filter
+    _applySearch(_searchQuery);
   }
 
   void _onFilterSelected(FilterMode selectedMode) {
@@ -58,34 +54,53 @@ class _SearchPageState extends State<SearchPage> {
   void _applySearch(String query) {
     List<Map<String, String>> baseList;
 
+    // เลือกรายการเมนูตามการกรองที่เลือก
     if (_filterMode == FilterMode.all) {
-      baseList = _allMenus;
+      baseList = _allMenus; // เมนูทั้งหมด
     } else if (_filterMode == FilterMode.byIngredients) {
-      baseList = _ingredientMenus;
+      baseList = _ingredientMenus; // เมนูที่กรองตามวัตถุดิบ
     } else {
       baseList = [
         ..._recommendedMenus,
         ..._ingredientMenus,
         ..._allMenus,
-      ];
+      ]; // ถ้าไม่ได้เลือกกรอง ใช้ทั้งหมด
     }
 
+    // สร้างชุดข้อมูลที่ใช้สำหรับตรวจสอบว่าเมนูเคยถูกค้นหาหรือไม่
     final seen = <String>{};
-    final results = baseList.where((menu) {
-      final id = menu['recipe_id'] ?? '';
-      final name = menu['recipe_name'] ?? '';
-      if (seen.contains(id)) return false;
-      seen.add(id);
-      return name.toLowerCase().contains(query.toLowerCase());
-    }).toList();
+    final results =
+        baseList.where((menu) {
+          final id = menu['recipe_id'] ?? '';
+          final name = menu['recipe_name'] ?? '';
+          if (seen.contains(id)) return false;
+          seen.add(id);
+
+          // ตรวจสอบการค้นหาผ่านชื่อเมนูหรือวัตถุดิบ
+          return name.toLowerCase().contains(query.toLowerCase()) ||
+              (menu['ingredients'] ?? '').toLowerCase().contains(
+                query.toLowerCase(),
+              );
+        }).toList();
 
     setState(() {
       _filteredMenus = results;
     });
   }
 
-  void _searchMenu(String query) {
+  void _searchMenu(String query) async {
     _searchQuery = query;
+
+    // ดึงผลลัพธ์จากฐานข้อมูลโดยใช้การค้นหา
+    final results = await DatabaseHelperTest.searchRecipesByNameOrIngredient(
+      query,
+    );
+
+    setState(() {
+      _filteredMenus = results;
+    });
+
+    // เรียกใช้การกรองเพิ่มเติมหลังการค้นหาผ่าน DB
     _applySearch(query);
   }
 
@@ -134,8 +149,8 @@ class _SearchPageState extends State<SearchPage> {
             menuName: menu['recipe_name'] ?? '',
             imagePath: menu['recipe_image'] ?? '',
             isFavorited: isFavorited,
-            onFavoriteToggle: () =>
-                _toggleFavorite(menu['recipe_id']!, isFavorited),
+            onFavoriteToggle:
+                () => _toggleFavorite(menu['recipe_id']!, isFavorited),
           );
         }),
         const SizedBox(height: 16),
@@ -161,39 +176,39 @@ class _SearchPageState extends State<SearchPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: const Color(0xFFF9F9F9),
-      bottomNavigationBar: BottomNavBar(recommendedMenus: _recommendedMenus, currentIndex: 1,),
+      bottomNavigationBar: BottomNavBar(
+        recommendedMenus: _recommendedMenus,
+        currentIndex: 1,
+      ),
       body: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 16.0),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             const SizedBox(height: 40),
-            // 🔙 ปุ่มย้อนกลับ
-Row(
-  children: [
-    // 👇 ไม่ใช้ Padding ซ้อนซ้ำ ให้ชิดขอบจอ
-    IconButton(
-      padding: EdgeInsets.zero, // ✅ ไม่มี padding ด้านใน
-      constraints: const BoxConstraints(), // ✅ ไม่มีขนาดบังคับ
-      icon: const Icon(Icons.arrow_back, color: Colors.black87),
-      iconSize: 30,
-      onPressed: () {
-        Navigator.pop(context);
-      },
-    ),
-    const SizedBox(width: 4),
-    const Text(
-      '',
-      style: TextStyle(
-        fontSize: 20,
-        fontFamily: 'NotoSansThai',
-        fontWeight: FontWeight.w500,
-      ),
-    ),
-  ],
-),
 
-
+            Row(
+              children: [
+                IconButton(
+                  padding: EdgeInsets.zero,
+                  constraints: const BoxConstraints(),
+                  icon: const Icon(Icons.arrow_back, color: Colors.black87),
+                  iconSize: 30,
+                  onPressed: () {
+                    Navigator.pop(context);
+                  },
+                ),
+                const SizedBox(width: 4),
+                const Text(
+                  '',
+                  style: TextStyle(
+                    fontSize: 20,
+                    fontFamily: 'NotoSansThai',
+                    fontWeight: FontWeight.w500,
+                  ),
+                ),
+              ],
+            ),
 
             // 🔍 Search Box
             Container(
@@ -236,7 +251,6 @@ Row(
 
             const SizedBox(height: 20),
 
-            // 🔘 Filter Buttons
             Row(
               children: [
                 SizedBox(
@@ -252,7 +266,8 @@ Row(
                         side: const BorderSide(color: Colors.black),
                       ),
                     ),
-                    child: const Text('ทั้งหมด',
+                    child: const Text(
+                      'ทั้งหมด',
                       style: TextStyle(
                         fontSize: 16,
                         fontFamily: 'NotoSansThai',
@@ -266,7 +281,8 @@ Row(
                   width: 124,
                   height: 38,
                   child: ElevatedButton(
-                    onPressed: () => _onFilterSelected(FilterMode.byIngredients),
+                    onPressed:
+                        () => _onFilterSelected(FilterMode.byIngredients),
                     style: ElevatedButton.styleFrom(
                       backgroundColor: _buttonBg(FilterMode.byIngredients),
                       foregroundColor: _buttonText(FilterMode.byIngredients),
@@ -275,7 +291,8 @@ Row(
                         side: const BorderSide(color: Colors.black),
                       ),
                     ),
-                    child: const Text('จากวัตถุดิบ',
+                    child: const Text(
+                      'จากวัตถุดิบ',
                       style: TextStyle(
                         fontSize: 16,
                         fontFamily: 'NotoSansThai',
@@ -288,13 +305,14 @@ Row(
             ),
             const SizedBox(height: 4),
 
-            // 📋 Menu List
             Expanded(
               child: ListView(
                 children: [
                   if (_searchQuery.isNotEmpty)
                     _buildMenuSection('ผลการค้นหา', _filteredMenus),
-                  if (_searchQuery.isEmpty && _filterMode == null && _recommendedMenus.isNotEmpty)
+                  if (_searchQuery.isEmpty &&
+                      _filterMode == null &&
+                      _recommendedMenus.isNotEmpty)
                     _buildMenuSection('เมนูแนะนำ', _recommendedMenus),
                   if (_searchQuery.isEmpty && _filterMode == null)
                     _buildMenuSection('เมนูจากวัตถุดิบ', _ingredientMenus),

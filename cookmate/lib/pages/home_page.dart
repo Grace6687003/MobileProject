@@ -1,9 +1,8 @@
-import 'package:cookmate/models/favorite_menu_model.dart';
+
 import 'package:flutter/material.dart';
-import '../models/menu_from_ingredients_model.dart';
 import '../models/ingredient_model.dart';
-import '../widgets/menu_card.dart'; // ใช้ MenuCard สำหรับเมนูจากวัตถุดิบ
-import '../widgets/menu_item_card.dart'; // ใช้ MenuItemCard สำหรับเมนูโปรดและเมนูแนะนำ
+import '../widgets/menu_card.dart'; 
+import '../widgets/menu_item_card.dart'; 
 import '../widgets/ingredient_card.dart';
 import '../pages/detail_page.dart';
 import '../pages/search_page.dart';
@@ -54,9 +53,9 @@ class _HomePageState extends State<HomePage> {
   // ฟังก์ชันโหลดเมนูแนะนำครั้งแรก หรือเมื่อมีการเปลี่ยนหน้า
   void _loadRandomMenus() async {
     var randomMenus =
-        await DatabaseHelperTest.fetchRandomMenus(); // เรียกเมนูแนะนำแบบสุ่ม
+        await DatabaseHelperTest.fetchRandomMenus(); 
     setState(() {
-      _randomMenus = randomMenus; // เก็บข้อมูลเมนูแนะนำในตัวแปร
+      _randomMenus = randomMenus; 
     });
   }
 
@@ -71,11 +70,11 @@ class _HomePageState extends State<HomePage> {
     );
 
     setState(() {
-      // อัพเดตสถานะโปรดในเมนูที่เกี่ยวข้องใน _randomMenus
+   
       for (var menu in _randomMenus) {
         if (menu['recipe_id'] == recipeId) {
           menu['fav_id'] =
-              newFavoriteStatus ? '1' : '0'; // เปลี่ยนแปลงสถานะโปรด
+              newFavoriteStatus ? '1' : '0'; 
         }
       }
     });
@@ -223,7 +222,7 @@ class _HomePageState extends State<HomePage> {
                           margin: const EdgeInsets.only(right: 12),
                           child: _buildMenuCard(
                             recipe,
-                          ), // ใช้ MenuCard สำหรับเมนูจากวัตถุดิบ
+                          ), 
                         );
                       } else {
                         return goCard(() {
@@ -307,7 +306,7 @@ class _HomePageState extends State<HomePage> {
                               ),
                           onUpdate: () {
                             _refreshIngredients();
-                            _refreshRecipes(); // ✅ เพิ่มโหลดเมนูใหม่ด้วย
+                            _refreshRecipes(); 
                           },
                         );
                       } else {
@@ -414,7 +413,7 @@ class _HomePageState extends State<HomePage> {
                 padding: const EdgeInsets.only(left: 16),
                 itemCount:
                     _randomMenus.length > 4 ? 5 : _randomMenus.length + 1,
-                // แสดงสูงสุด 4 การ์ด + 1 ปุ่ม "Go"
+               
                 itemBuilder: (context, index) {
                   if (index <
                       (_randomMenus.length > 4 ? 4 : _randomMenus.length)) {
